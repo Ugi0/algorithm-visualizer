@@ -1,0 +1,10 @@
+
+.item {
+    border: 1px #28333060 solid;
+    width: 50px;
+    height: 50px;
+}
+
+.item:hover {
+    cursor: pointer;
+}
