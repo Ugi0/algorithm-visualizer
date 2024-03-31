@@ -1,0 +1,13 @@
+.Options {
+    align-self: center;
+    margin: 50px;
+}
+
+.OptionsItem {
+    margin: 20px;
+    color: white;
+}
+
+#startAndEndFlag:hover {
+    cursor: pointer;
+}
