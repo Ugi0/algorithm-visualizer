@@ -2,4 +2,8 @@
 .Grid {
     display: grid;
     height: 80vh;
+    width: 80vh;
+    gap: 1px;
+    padding: 2px;
+    grid-auto-rows: 1fr;
 }

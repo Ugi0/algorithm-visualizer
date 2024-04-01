@@ -5,73 +5,72 @@ import './Item.css'
 
 function Item(props) {
     const lockedColor = "#14181c";
-    const colors = [
-        "#1358b7", "#5d168d"
-    ]
 
-    const [colorIndex, setColorIndex] = useState(props.colorIndex ?? 2)
-    const [border, setBorder] = useState(false);
-    const [icon, setIcon] = useState(undefined)
-
-    props.innerRef.current = () => { return getItemState() }
+    const [status, setStatus] = useState(0)
+    // 0 default, 1 Border, 2 Start, 3 End, 4 Searching, 5 Searched
 
     const getItemState = () => {
-        if (icon === 0) {
-            return "S"
-        } else if (icon === 1) {
-            return "E"
-        }
-        if (border) {
-            return "B"
-        }
-        return 0
+        return status;
+        /*switch (status) {
+            case 1:
+                return "B"
+            case 2:
+                return "S"
+            case 3:
+                return "E"
+            default:
+                return 0
+        }*/
     }
-
-    const handleMouseEnter = () => {
-        if (!props.locked) {
-            setColorIndex((colorIndex + 1) % 2)
+    if (props.innerRef) {
+        props.innerRef.current = { 
+            getItemState: function() { return getItemState() }, 
+            resetItemState: function() { setStatus(0); },
+            setItemState: function(value) { setStatus(value); }
         }
     }
 
     const handleOnClick = () => {
-        if (!props.locked) {
-            if (props.iconSelected) {
-                setIcon(props.iconCount)
-                if (props.iconCount === 1) {
-                    props.setIconSelected(false)
-                } else {
-                    props.setIconCount(props.iconCount+1)
-                }
-            } else {
-            //setColorIndex((colorIndex + 1) % 2)
-                setBorder(!border)
+        if (props.iconSelected) {
+            if (props.freeIcons.length === 1) {
+                props.setIconSelected(false)
             }
+            setStatus(props.freeIcons[0])
+            props.setFreeIcons(props.freeIcons.slice(1))
+        } else {
+            setStatus(status ? 0 : 1)
         }
     }
 
     const getColor = () => {
-        if (props.locked) {
-            return lockedColor;
-        } else if (border) {
-            return lockedColor
-        } else if (icon !== undefined) {
-            return '#ae27ff'
+        switch (status) {
+            case 1:
+                return lockedColor
+            case 2:
+                return "#AE27FF"
+            case 3:
+                return "#AE27FF"
+            case 4:
+                return "#111111"
+            case 5:
+                return "#222222"
+            default:
+                return "#444444"
         }
-        //return colors[colorIndex]
     }
 
     const getIcon = () => {
-        switch (icon) {
-            case 1:
-                return <FlagIcon />
-            case 0:
+        switch (status) {
+            case 2:
                 return <PlayArrowIcon />
+            case 3:
+                return <FlagIcon />
             default:
                 return 
         }
     }
 
-    return <div className='item' onClick={handleOnClick} style={{backgroundColor: getColor(), width: props.width, height: props.width}}>
+    return <div className='item' onClick={handleOnClick} style={{backgroundColor: getColor()}}>
         {getIcon()}
     </div>
 }

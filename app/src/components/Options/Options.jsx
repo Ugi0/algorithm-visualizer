@@ -1,16 +1,15 @@
 import './Options.css'
 import FlagIcon from '@mui/icons-material/Flag';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'; //Start
-import { useState } from 'react';
 
 function Options(props) {
 
     const getIcon = () => {
-        switch (props.iconCount) {
-            case 1:
-                return <FlagIcon style={{fontSize: 50, color: `${props.iconSelected ? 'black' : ""}`}} />
-            case 0:
+        switch (props.freeIcons[0]) {
+            case 2:
                 return <PlayArrowIcon style={{fontSize: 50, color: `${props.iconSelected ? 'black' : ""}`}} />
+            case 3:
+                return <FlagIcon style={{fontSize: 50, color: `${props.iconSelected ? 'black' : ""}`}} />
             default:
                 return
         }
@@ -18,14 +17,10 @@ function Options(props) {
 
     return <div className="Options">
         <div className='OptionsItem' id="gridWidthOption">
-            gridWidth
-            <input onChange={(e) => props.setGridWidth(e.target.value)} value={props.gridWidth} type="number" min={0} max={50} />
+            gridSize
+            <input onChange={(e) => props.setGridSize(e.target.value)} value={props.gridSize} type="number" min={10} max={50} />
         </div>
-        <div className='OptionsItem' id="gridHeightOption">
-            gridHeight
-            <input onChange={(e) => props.setGridHeight(e.target.value)} value={props.gridHeight} type="number" min={0} max={50} />
-        </div>
-        <div className='OptionsItem' id='startAndEndFlag' onClick={() => {if (props.iconCount !== 1) props.setIconSelected(!props.iconSelected)}}>
+        <div className='OptionsItem' id='startAndEndFlag' onClick={() => {if (props.freeIcons.length !== 0) props.setIconSelected(true)}}>
             {getIcon()}
         </div>
         <div className='OptionsItem' id='start'>

@@ -1,7 +1,6 @@
 
 .item {
     display: flex;
-    border: 1px #28333060 solid;
     justify-content: center;
     align-items: center;
 }
