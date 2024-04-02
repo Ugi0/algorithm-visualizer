@@ -18,7 +18,7 @@ function Options(props) {
     return <div className="Options">
         <div className='OptionsItem' id="gridWidthOption">
             gridSize
-            <input onChange={(e) => props.setGridSize(e.target.value)} value={props.gridSize} type="number" min={10} max={50} />
+            <input onChange={(e) => props.setGridSize(parseInt(e.target.value))} value={props.gridSize} type="number" min={10} max={50} />
         </div>
         <div className='OptionsItem' id='startAndEndFlag' onClick={() => {if (props.freeIcons.length !== 0) props.setIconSelected(true)}}>
             {getIcon()}

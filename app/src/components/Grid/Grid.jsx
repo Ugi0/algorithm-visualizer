@@ -4,6 +4,8 @@ import './Grid.css'
 import Item from '../item/Item';
 import test from '../../algorithms/test';
 
+var timer;
+
 function Grid(props) {
     const [gridSize, setgridSize] = useState(20);
     const [iconSelected, setIconSelected] = useState(false);
@@ -16,21 +18,23 @@ function Grid(props) {
         return {state: 1, ref: createRef()}
     }
 
-    const getGridState = () => {
-        for (let i = 0; i < gridSize; i++) {
-            console.log(gridMatrix.slice((gridSize*(i)), gridSize + (gridSize*(i))).map(e => e.ref.current.getItemState()))
-        }
-    }
-
     const toggleStart = () => {
-        setStarted(!started);
-        const newMatrix = test(gridMatrix.reduce((acc, curr, i) => {
-            if ( !(i % gridSize)  ) {  
-              acc.push(gridMatrix.slice(i, i + gridSize));
+        if (freeIcons.length !== 0) return
+        if (!started) {
+            var x = 0;
+            const func = () => { test(gridMatrix.reduce((acc, curr, i) => {
+                if ( !(i % gridSize)  ) {  
+                  acc.push(gridMatrix.slice(i, i + gridSize));
+                }
+                return acc;
+              }, []), gridSize, x)
+              x++;
             }
-            return acc;
-          }, []), gridSize)
-        setGridMatrix(newMatrix.flat())
+            timer = setInterval(func, 500)
+        } else {
+            clearInterval(timer);
+        }
+        setStarted(!started);
     }
 
     const resetGrid = (size) => {
@@ -47,7 +51,7 @@ function Grid(props) {
     return <>
         <div className='Grid' style={{gridTemplateColumns: `repeat(${gridSize}, 1fr)`}}>
             {gridMatrix.map((e, i) => {
-                return <Item innerRef={e.ref} setFreeIcons={setFreeIcons} freeIcons={freeIcons} iconSelected={iconSelected} setIconSelected={setIconSelected} key={i} width={`calc(min(80vh, 80vw) / ${gridSize})`}/>
+                return <Item innerRef={e.ref} setFreeIcons={setFreeIcons} freeIcons={freeIcons} iconSelected={iconSelected} setIconSelected={setIconSelected} key={i}/>
             })}
         </div>
         <Options started={started} toggleStart={toggleStart} setFreeIcons={setFreeIcons} freeIcons={freeIcons} iconSelected={iconSelected} setIconSelected={setIconSelected} setGridSize={handlegridSizeChange} gridSize={gridSize}/>  

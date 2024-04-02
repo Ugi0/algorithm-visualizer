@@ -1,8 +1,7 @@
 
-function test(matrix, gridSize) {
+function test(matrix, gridSize, rounds) {
     //Take a matrix, do a step and return a new matrix
     // 0 default, 1 Border, 2 Start, 3 End, 4 Searching, 5 Searched
-
     const directions = (ind) => {
         const i = ind[0]
         const j = ind[1]

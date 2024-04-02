@@ -47,13 +47,13 @@ function Item(props) {
             case 1:
                 return lockedColor
             case 2:
-                return "#AE27FF"
+                return "#11111105"
             case 3:
-                return "#AE27FF"
+                return "#11111105"
             case 4:
-                return "#111111"
+                return "#6343f4"
             case 5:
-                return "#222222"
+                return "#1358b7"
             default:
                 return "#444444"
         }
@@ -62,15 +62,20 @@ function Item(props) {
     const getIcon = () => {
         switch (status) {
             case 2:
-                return <PlayArrowIcon />
+                return <PlayArrowIcon style={{color: '#fa5d32'}} />
             case 3:
-                return <FlagIcon />
+                return <FlagIcon style={{color: '#043dc2'}}/>
             default:
                 return 
         }
     }
 
-    return <div className='item' onClick={handleOnClick} style={{backgroundColor: getColor()}}>
+    return <div className='item' onClick={handleOnClick} style={{
+        backgroundColor: getColor(), 
+        transition: "all .8s ease",
+        WebkitTransition: "all .8s ease",
+        MozTransition: "all .8s ease"
+    }}>
         {getIcon()}
     </div>
 }
