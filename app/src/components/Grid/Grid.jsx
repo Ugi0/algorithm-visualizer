@@ -1,8 +1,8 @@
 import Options from '../Options/Options';
 import { createRef, useState } from 'react';
 import './Grid.css'
-import Item from '../item/Item';
-import test from '../../algorithms/test';
+import Item from '../Item/Item';
+import search from '../../algorithms/search';
 
 var timer;
 
@@ -22,17 +22,16 @@ function Grid(props) {
         if (freeIcons.length !== 0) return
         if (!started) {
             var x = 0;
-            const func = () => { test(gridMatrix.reduce((acc, curr, i) => {
+            const func = () => { search(gridMatrix.reduce((acc, curr, i) => {
+
                 if ( !(i % gridSize)  ) {  
                   acc.push(gridMatrix.slice(i, i + gridSize));
                 }
                 return acc;
-              }, []), gridSize, x)
+              }, []), gridSize, timer)
               x++;
             }
-            timer = setInterval(func, 500)
-        } else {
-            clearInterval(timer);
+            timer = setInterval(func, 200)
         }
         setStarted(!started);
     }
