@@ -32,6 +32,8 @@ function Grid(props) {
               x++;
             }
             timer = setInterval(func, 200)
+        } else {
+            clearInterval(timer);
         }
         setStarted(!started);
     }
