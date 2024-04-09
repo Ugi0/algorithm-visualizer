@@ -1,52 +1,37 @@
 
 function search(matrix, gridSize, timer) {
-    //Take a matrix, do a step and return a new matrix
     //matrix coordinates i and j are in wrong places therefore i = the actual j and j = the actual i
     //doesn't work correctly with borders yet
-    // 0 default, 1 Border, 2 Start, 3 End, 4 Searching, 5 Searched
+    // 0 default, 1 Border, 2 Start, 3 End, 4 Searching, 5 Searched, 6 found path
     const goalCheck = () => {
         var found = 0;
-        queue.forEach((ind) => {
-            if (matrix[ind[0]][ind[1]].ref.current.getItemState() === 3){
+        queue.forEach(([i,j]) => {
+            if (matrix[i][j].ref.current.getState() === 3){
                 found = 1
             }
         })
         return found;
     }
 
-    const directions = (ind) => {
-        const i = ind[0]
-        const j = ind[1]
+    const directions = (i,j) => {
         let ans = [];
-        if (j-1 >= 0 
-            && matrix[i][j-1].ref.current.getItemState() !== 1
-            && matrix[i][j-1].ref.current.getItemState() !== 2 
-            && matrix[i][j-1].ref.current.getItemState() !== 4 
-            && matrix[i][j-1].ref.current.getItemState() !== 5) {
+        if (j-1 >= 0 && 
+            [0,3].includes(matrix[i][j-1].ref.current.getState())) {
             ans.push([i, j-1])
             queue.push([i, j-1])
         }
-        if (i-1 >= 0 
-            && matrix[i-1][j].ref.current.getItemState() !== 1 
-            && matrix[i-1][j].ref.current.getItemState() !== 2 
-            && matrix[i-1][j].ref.current.getItemState() !== 4
-            && matrix[i-1][j].ref.current.getItemState() !== 5) {
+        if (i-1 >= 0 &&
+            [0,3].includes(matrix[i-1][j].ref.current.getState())) {
             ans.push([i-1, j])
             queue.push([i-1, j])
         }
-        if (j+1 < gridSize
-            && matrix[i][j+1].ref.current.getItemState() !== 1
-            && matrix[i][j+1].ref.current.getItemState() !== 2
-            && matrix[i][j+1].ref.current.getItemState() !== 4
-            && matrix[i][j+1].ref.current.getItemState() !== 5) {
+        if (j+1 < gridSize &&
+            [0,3].includes(matrix[i][j+1].ref.current.getState())) {
             ans.push([i, j+1])
             queue.push([i, j+1])
         }
-        if (i+1 < gridSize 
-            && matrix[i+1][j].ref.current.getItemState() !== 1
-            && matrix[i+1][j].ref.current.getItemState() !== 2 
-            && matrix[i+1][j].ref.current.getItemState() !== 4 
-            && matrix[i+1][j].ref.current.getItemState() !== 5) {
+        if (i+1 < gridSize &&
+            [0,3].includes(matrix[i+1][j].ref.current.getState())) {
             ans.push([i+1, j])
             queue.push([i+1, j])
         }
@@ -60,27 +45,25 @@ function search(matrix, gridSize, timer) {
     let queue = [];
     matrix.forEach((row,i) => {
         row.forEach((item,j) => {
-            if (item.ref.current.getItemState() === 2) {
+            if (item.ref.current.getState() === 2) {
                 current.push([i,j])
-            } else if (item.ref.current.getItemState() === 4){
-                    current.push([i,j])
-            } else if (item.ref.current.getItemState() === 5){
+            } else if (item.ref.current.getState() === 4){
+                current.push([i,j])
+            } else if (item.ref.current.getState() === 5){
                 current.push([i,j])
             }
         })
     });
 
-    current.forEach((ind) => {
-        directions(ind)
-        if (matrix[ind[0]][ind[1]].ref.current.getItemState() !== 1
-        && matrix[ind[0]][ind[1]].ref.current.getItemState() !== 2
-        && matrix[ind[0]][ind[1]].ref.current.getItemState() !== 3){
-            matrix[ind[0]][ind[1]].ref.current.setItemState(5)
+    current.forEach(([i,j]) => {
+        directions(i,j)
+        if (![1,2,3].includes(matrix[i][j].ref.current.getState())){
+            matrix[i][j].ref.current.setState(5)
         }
     })
 
-    const row = matrix.findIndex(row => row.map(e => e.ref.current.getItemState()).includes(2));
-    const col = matrix[row].map(e => e.ref.current.getItemState()).indexOf(2);
+    const row = matrix.findIndex(row => row.map(e => e.ref.current.getState()).includes(2));
+    const col = matrix[row].map(e => e.ref.current.getState()).indexOf(2);
     var i = 0;
     var j = 0;
     var i_dif = 0;
@@ -103,9 +86,8 @@ function search(matrix, gridSize, timer) {
         console.log("FOUND!")
     } else {
         console.log("New Searching tile.")
-        matrix[i][j].ref.current.setItemState(4);
+        matrix[i][j].ref.current.setState(4);
     }
-    return matrix
 }
 
 
