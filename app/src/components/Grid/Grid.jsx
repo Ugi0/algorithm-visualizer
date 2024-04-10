@@ -28,10 +28,10 @@ function Grid(props) {
                   acc.push(gridMatrix.slice(i, i + gridSize));
                 }
                 return acc;
-              }, []), gridSize, timer)
+              }, []), gridSize, timer, x)
               x++;
             }
-            timer = setInterval(func, 200)
+            timer = setInterval(func,300)
         } else {
             clearInterval(timer);
         }
