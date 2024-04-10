@@ -4,35 +4,17 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow'; //Start
 import './Item.css'
 
 function Item(props) {
-    const lockedColor = "#14181c";
-
     const [status, setStatus] = useState(0)
     const [distance, setDistance] = useState(60000)
-    // 0 default, 1 Border, 2 Start, 3 End, 4 Searching, 5 Searched
+    // 0 default, 1 Border, 2 Start, 3 End, 4 Searching, 5 Searched, 6 Path
 
-    const getItemState = () => {
-        return status;
-        /*switch (status) {
-            case 1:
-                return "B"
-            case 2:
-                return "S"
-            case 3:
-                return "E"
-            default:
-                return 0
-        }*/
-    }
-    const getItemDistance = () => {
-        return distance;
-    }
     if (props.innerRef) {
         props.innerRef.current = { 
-            getItemState: function() { return getItemState() }, 
-            resetItemState: function() { setStatus(0); },
-            setItemState: function(value) { setStatus(value); },
-            getItemDistance: function() { return getItemDistance(); },
-            setItemDistance: function(value) { setDistance(value); },
+            getState: function() { return status }, 
+            resetState: function() { setStatus(0); },
+            setState: function(value) { setStatus(value); },
+            getDistance: function() { return distance; },
+            setDistance: function(value) { setDistance(value); }
         }
     }
 
@@ -45,16 +27,13 @@ function Item(props) {
             props.setFreeIcons(props.freeIcons.slice(1))
         } else {
             setStatus(status ? 0 : 1)
-           // setDistance(distance ? 0 : 60000)
-           // console.log("status: ", status)
-           // console.log("distance: ", distance)
         }
     }
 
     const getColor = () => {
         switch (status) {
             case 1:
-                return lockedColor
+                return "#14181c"
             case 2:
                 return "#11111105"
             case 3:
@@ -63,6 +42,8 @@ function Item(props) {
                 return "#6343f4"
             case 5:
                 return "#1358b7"
+            case 6:
+                return '#e41f11'
             default:
                 return "#444444"
         }

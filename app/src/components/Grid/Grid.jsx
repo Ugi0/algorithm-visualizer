@@ -31,7 +31,7 @@ function Grid(props) {
               }, []), gridSize, timer, x)
               x++;
             }
-            timer = setInterval(func,300)
+            timer = setInterval(func,100)
         } else {
             clearInterval(timer);
         }
@@ -39,7 +39,7 @@ function Grid(props) {
     }
 
     const resetGrid = (size) => {
-        gridMatrix.forEach(e => e.ref.current.resetItemState());
+        gridMatrix.forEach(e => e.ref.current.resetState());
         setGridMatrix(Array.from(new Array(size * size)).map((_,i) => initialMap(i)))
         setFreeIcons([2,3])
     }
