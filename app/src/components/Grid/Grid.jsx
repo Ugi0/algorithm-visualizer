@@ -12,10 +12,10 @@ function Grid(props) {
     const [freeIcons, setFreeIcons] = useState([2,3])
     const [started, setStarted] = useState(false);
 
-    const [gridMatrix, setGridMatrix] = useState(Array.from(new Array(gridSize * gridSize)).map((_,i) => initialMap(i)))
+    const [gridMatrix, setGridMatrix] = useState(Array.from(new Array(gridSize * gridSize)).map((_,i) => {return {ref: createRef()}}))
 
-    function initialMap(index) {
-        return {state: 1, ref: createRef()}
+    const getStarted = () => {
+        return started
     }
 
     const toggleStart = () => {
@@ -40,7 +40,7 @@ function Grid(props) {
 
     const resetGrid = (size) => {
         gridMatrix.forEach(e => e.ref.current.resetState());
-        setGridMatrix(Array.from(new Array(size * size)).map((_,i) => initialMap(i)))
+        setGridMatrix(Array.from(new Array(size * size)).map((_,i) => {return {ref: createRef()}}))
         setFreeIcons([2,3])
     }
 
@@ -49,10 +49,13 @@ function Grid(props) {
         resetGrid(e)
     }
 
+    //TODO Make presets for the borders -> maze, maybe have a algorithm for generating a random maze
+    //TODO Save to file and upload to load a state
+
     return <>
-        <div className='Grid' style={{gridTemplateColumns: `repeat(${gridSize}, 1fr)`}}>
+        <div className='Grid' style={{gridTemplateColumns: `repeat(${gridSize}, 1fr)`}} onMouseDown={() => props.setPressedDown(true)}>
             {gridMatrix.map((e, i) => {
-                return <Item innerRef={e.ref} setFreeIcons={setFreeIcons} freeIcons={freeIcons} iconSelected={iconSelected} setIconSelected={setIconSelected} key={i}/>
+                return <Item getStarted={getStarted} getPressedDown={props.getPressedDown} innerRef={e.ref} setFreeIcons={setFreeIcons} freeIcons={freeIcons} iconSelected={iconSelected} setIconSelected={setIconSelected} key={i}/>
             })}
         </div>
         <Options started={started} toggleStart={toggleStart} setFreeIcons={setFreeIcons} freeIcons={freeIcons} iconSelected={iconSelected} setIconSelected={setIconSelected} setGridSize={handlegridSizeChange} gridSize={gridSize}/>  

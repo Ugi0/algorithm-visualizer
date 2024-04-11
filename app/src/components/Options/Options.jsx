@@ -15,6 +15,8 @@ function Options(props) {
         }
     }
 
+    //TODO Add reset button
+    //TODO Button to change between choosing weighted tiles and borders
     return <div className="Options">
         <div className='OptionsItem' id="gridWidthOption">
             gridSize

@@ -19,6 +19,7 @@ function Item(props) {
     }
 
     const handleOnClick = () => {
+        if (props.getStarted()) return
         if (props.iconSelected) {
             if (props.freeIcons.length === 1) {
                 props.setIconSelected(false)
@@ -28,6 +29,15 @@ function Item(props) {
         } else {
             setStatus(status ? 0 : 1)
         }
+    }
+
+    const handleDrag = () => {
+        if (props.getStarted()) return
+        if (status === 2 || status === 3) return
+        if (props.getPressedDown()) {
+            setStatus(status ? 0 : 1)
+        }
+        //If mouse is being pressed down, change state
     }
 
     const getColor = () => {
@@ -59,8 +69,9 @@ function Item(props) {
                 return 
         }
     }
+    //TODO Make border change with drag
 
-    return <div className='item' onClick={handleOnClick} style={{
+    return <div className='item' onMouseDown={handleOnClick} onMouseOver={handleDrag} style={{
         backgroundColor: getColor(), 
         transition: "all .8s ease",
         WebkitTransition: "all .8s ease",

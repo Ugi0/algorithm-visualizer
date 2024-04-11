@@ -1,6 +1,8 @@
 .Options {
+    position: absolute;
     align-self: center;
     margin: 50px;
+    right: 20px;
 }
 
 .OptionsItem {
