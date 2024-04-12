@@ -6,7 +6,7 @@ import './Item.css'
 function Item(props) {
     const [status, setStatus] = useState(0)
     const [distance, setDistance] = useState(60000)
-    // 0 default, 1 Border, 2 Start, 3 End, 4 Searching, 5 Searched, 6 Path
+    // 0 default, 1 Border, 2 Start, 3 End, 4 Searching, 5 Searched, 6 Path, 7 Slow Tile
 
     if (props.innerRef) {
         props.innerRef.current = { 
@@ -27,7 +27,7 @@ function Item(props) {
             setStatus(props.freeIcons[0])
             props.setFreeIcons(props.freeIcons.slice(1))
         } else {
-            setStatus(status ? 0 : 1)
+            setStatus(status ? 0 : props.optionsRef.current.getTileType())
         }
     }
 
@@ -35,9 +35,8 @@ function Item(props) {
         if (props.getStarted()) return
         if (status === 2 || status === 3) return
         if (props.getPressedDown()) {
-            setStatus(status ? 0 : 1)
+            setStatus(status ? 0 : props.optionsRef.current.getTileType())
         }
-        //If mouse is being pressed down, change state
     }
 
     const getColor = () => {
@@ -54,6 +53,8 @@ function Item(props) {
                 return "#1358b7"
             case 6:
                 return '#e41f11'
+            case 7:
+                return '#C0C0C0'
             default:
                 return "#444444"
         }
@@ -69,7 +70,6 @@ function Item(props) {
                 return 
         }
     }
-    //TODO Make border change with drag
 
     return <div className='item' onMouseDown={handleOnClick} onMouseOver={handleDrag} style={{
         backgroundColor: getColor(), 

@@ -13,3 +13,12 @@
 #startAndEndFlag:hover {
     cursor: pointer;
 }
+
+.slowTile:hover {
+    cursor: pointer;
+}
+
+.icons {
+    justify-content: center;
+    align-items: center;
+}

@@ -3,6 +3,8 @@ import { createRef, useState } from 'react';
 import './Grid.css'
 import Item from '../Item/Item';
 import search from '../../algorithms/search';
+import { ToastContainer, toast, Flip } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 var timer;
 
@@ -19,7 +21,10 @@ function Grid(props) {
     }
 
     const toggleStart = () => {
-        if (freeIcons.length !== 0) return
+        if (freeIcons.length !== 0) {
+            toast("You need to set start and end nodes");
+            return
+        }
         if (!started) {
             var x = 0;
             const func = () => { search(gridMatrix.reduce((acc, curr, i) => {
@@ -51,14 +56,28 @@ function Grid(props) {
 
     //TODO Make presets for the borders -> maze, maybe have a algorithm for generating a random maze
     //TODO Save to file and upload to load a state
+    const optionsRef = createRef();
 
     return <>
         <div className='Grid' style={{gridTemplateColumns: `repeat(${gridSize}, 1fr)`}} onMouseDown={() => props.setPressedDown(true)}>
             {gridMatrix.map((e, i) => {
-                return <Item getStarted={getStarted} getPressedDown={props.getPressedDown} innerRef={e.ref} setFreeIcons={setFreeIcons} freeIcons={freeIcons} iconSelected={iconSelected} setIconSelected={setIconSelected} key={i}/>
+                return <Item optionsRef={optionsRef} getStarted={getStarted} getPressedDown={props.getPressedDown} innerRef={e.ref} setFreeIcons={setFreeIcons} freeIcons={freeIcons} iconSelected={iconSelected} setIconSelected={setIconSelected} key={i}/>
             })}
         </div>
-        <Options started={started} toggleStart={toggleStart} setFreeIcons={setFreeIcons} freeIcons={freeIcons} iconSelected={iconSelected} setIconSelected={setIconSelected} setGridSize={handlegridSizeChange} gridSize={gridSize}/>  
+        <Options innerRef={optionsRef} started={started} toggleStart={toggleStart} setFreeIcons={setFreeIcons} freeIcons={freeIcons} iconSelected={iconSelected} setIconSelected={setIconSelected} setGridSize={handlegridSizeChange} gridSize={gridSize}/>  
+        <ToastContainer
+            position="top-right"
+            autoClose={2000}
+            hideProgressBar
+            newestOnTop={false}
+            closeOnClick={false}
+            rtl={false}
+            pauseOnFocusLoss={false}
+            draggable
+            pauseOnHover={false}
+            theme="dark"
+            transition={Flip}    
+        />
     </>
 }
 
