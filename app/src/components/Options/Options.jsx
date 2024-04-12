@@ -1,7 +1,7 @@
 import './Options.css'
 import FlagIcon from '@mui/icons-material/Flag';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow'; //Start
-import { useState } from 'react';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import { useRef, useState } from 'react';
 
 function Options(props) {
     const [slowTileBorder, setSlowTileBorder] = useState(1)
@@ -36,6 +36,25 @@ function Options(props) {
 
     //TODO Add reset button
 
+    const saveFile = async (blob) => {
+        const a = document.createElement('a');
+        a.download = 'state.txt';
+        a.href = URL.createObjectURL(blob);
+        a.addEventListener('click', (e) => {
+          setTimeout(() => URL.revokeObjectURL(a.href), 30 * 1000);
+        });
+        a.click();
+    };
+
+    const fileInputRef = useRef();
+
+    const handleChange = event => {
+        const file = event.target.files[0];
+        if (file.type === 'text/plain') {
+            file.text().then(e => props.setGridState(e))
+        }
+    };
+
     return <div className="Options">
         <div className='OptionsItem' id="gridWidthOption">
             gridSize
@@ -50,6 +69,20 @@ function Options(props) {
         <div className='OptionsItem' id='start'>
             <button onClick={props.toggleStart}>
                 {props.started ? "Stop" : "Start"}
+            </button>
+        </div>
+        <div>
+            <input 
+                type='file'
+                style={{display: 'none'}}
+                ref={fileInputRef}
+                onChange={handleChange}
+            />
+            <button onClick={() => fileInputRef.current.click()}>
+                Import data
+            </button>
+            <button onClick={() => {const blob = new Blob([props.getGridState()], {type : 'application/json'}); saveFile(blob)}}>
+                Export data
             </button>
         </div>
     </div>

@@ -9,7 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 var timer;
 
 function Grid(props) {
-    const [gridSize, setgridSize] = useState(20);
+    const [gridSize, setGridSize] = useState(20);
     const [iconSelected, setIconSelected] = useState(false);
     const [freeIcons, setFreeIcons] = useState([2,3])
     const [started, setStarted] = useState(false);
@@ -18,6 +18,21 @@ function Grid(props) {
 
     const getStarted = () => {
         return started
+    }
+
+    const getData = () => {
+        return `${gridSize};${freeIcons.join("")};${gridMatrix.map(e => e.ref.current.getState()).join(";")}`
+    }
+
+    const setData = (data) => {
+        const parts = data.split(";")
+        setGridSize(parseInt(parts[0]));
+        setFreeIcons(Array.from(parts[1]).map(e => parseInt(e)))
+        const newGrid = Array.from(new Array(parseInt(parts[0])*parseInt(parts[0]))).map((_,i) => {return {ref: createRef()}});
+        setGridMatrix(newGrid)
+        setTimeout(() => parts.slice(2).forEach((e,i) => {
+            newGrid[i].ref.current.setState(parseInt(e))
+        }), 200)
     }
 
     const toggleStart = () => {
@@ -50,7 +65,7 @@ function Grid(props) {
     }
 
     const handlegridSizeChange = (e) => {
-        setgridSize(e);
+        setGridSize(e);
         resetGrid(e)
     }
 
@@ -64,7 +79,7 @@ function Grid(props) {
                 return <Item optionsRef={optionsRef} getStarted={getStarted} getPressedDown={props.getPressedDown} innerRef={e.ref} setFreeIcons={setFreeIcons} freeIcons={freeIcons} iconSelected={iconSelected} setIconSelected={setIconSelected} key={i}/>
             })}
         </div>
-        <Options innerRef={optionsRef} started={started} toggleStart={toggleStart} setFreeIcons={setFreeIcons} freeIcons={freeIcons} iconSelected={iconSelected} setIconSelected={setIconSelected} setGridSize={handlegridSizeChange} gridSize={gridSize}/>  
+        <Options innerRef={optionsRef} getGridState={getData} setGridState={setData} started={started} toggleStart={toggleStart} setFreeIcons={setFreeIcons} freeIcons={freeIcons} iconSelected={iconSelected} setIconSelected={setIconSelected} setGridSize={handlegridSizeChange} gridSize={gridSize}/>  
         <ToastContainer
             position="top-right"
             autoClose={2000}
