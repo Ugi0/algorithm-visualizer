@@ -2,19 +2,23 @@ import Options from '../Options/Options';
 import { createRef, useState } from 'react';
 import './Grid.css'
 import Item from '../Item/Item';
-import distanceCalculation from '../../algorithms/distanceCalculation';
-import search from '../../algorithms/search';
+import distanceCalculation from "../../algorithms/distanceCalculation";
+import heuristicCalculation from '../../algorithms/heuristicCalculation';
+import dijkstraSearch from "../../algorithms/dijkstraSearch";
+import aSearch from '../../algorithms/aSearch';
 import { ToastContainer, toast, Flip } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 var timer1;
 var timer2;
+var timer3;
 
 function Grid(props) {
     const [gridSize, setGridSize] = useState(20);
     const [iconSelected, setIconSelected] = useState(false);
     const [freeIcons, setFreeIcons] = useState([2,3])
     const [started, setStarted] = useState(false);
+    const [algorithm, setAlgorithm] = useState(0);
 
     const [gridMatrix, setGridMatrix] = useState(Array.from(new Array(gridSize * gridSize)).map((_,i) => {return {ref: createRef()}}))
 
@@ -24,6 +28,10 @@ function Grid(props) {
 
     const getData = () => {
         return `${gridSize};${freeIcons.join("")};${gridMatrix.map(e => e.ref.current.getState()).join(";")}`
+    }
+
+    const getAlgorithm = () => {
+        return algorithm
     }
 
     const setData = (data) => {
@@ -37,37 +45,103 @@ function Grid(props) {
         }), 200)
     }
 
+    const toggleAlgorithm = (event) => {
+        var click = event.target.id;
+        switch (click) {
+            case 'Dijkstra':
+                console.log('Dijkstra');
+                setAlgorithm(1);
+                break;
+            case 'A*':
+                console.log('A*');
+                setAlgorithm(2);
+                break;
+            default:
+                return false;
+        }
+    }
+
     const toggleStart = () => {
+        if (algorithm === 0) {
+            toast("You need to select an algorithm");
+            return
+        }
         if (freeIcons.length !== 0) {
             toast("You need to set start and end nodes");
             return
         }
         if (!started) {
-            var x = 0;
-            var y = 0;
-            var state = 0;
-            const func1 = () => { 
-                state = distanceCalculation(gridMatrix.reduce((acc, curr, i) => {
-                if ( !(i % gridSize)  ) {  
-                  acc.push(gridMatrix.slice(i, i + gridSize));
+            var rounds1 = 0;
+            var rounds2 = 0;
+            var rounds3 = 0;
+            var ended1 = 0;
+            var ended2 = 0;
+            if (algorithm === 1){
+                console.log("Dijkstra's algorithm selected")
+                const func1 = () => { 
+                    console.log("Calculating distance...")
+                    ended1 = distanceCalculation(gridMatrix.reduce((acc, curr, i) => {
+                    if ( !(i % gridSize)  ) {  
+                    acc.push(gridMatrix.slice(i, i + gridSize));
+                    }
+                    return acc;
+                }, []), gridSize, timer1, rounds1)
+                rounds1++;
                 }
-                return acc;
-              }, []), gridSize, timer1, x)
-              x++;
-            }
-            timer1 = setInterval(func1)
-            const func2 = () => {
-                if (state === 1){
-                    search(gridMatrix.reduce((acc, curr, i) => {
-                        if ( !(i % gridSize)  ) {  
-                            acc.push(gridMatrix.slice(i, i + gridSize));
-                        }
-                        return acc;
-                    }, []), gridSize, timer2, y)
-                    y++;
+                timer1 = setInterval(func1)
+                const func2 = () => {
+                    if (ended1 === 1){
+                        console.log("Dijkstra's algorithm starts!")
+                        dijkstraSearch(gridMatrix.reduce((acc, curr, i) => {
+                            if ( !(i % gridSize)  ) {  
+                                acc.push(gridMatrix.slice(i, i + gridSize));
+                            }
+                            return acc;
+                        }, []), gridSize, timer2, rounds2)
+                        rounds2++;
+                    }
                 }
+                timer2 = setInterval(func2,100)
+            } if (algorithm === 2) {
+                console.log("A* algorithm selected")
+                const func1 = () => { 
+                    console.log("Calculating distances...")
+                    ended1 = distanceCalculation(gridMatrix.reduce((acc, curr, i) => {
+                    if ( !(i % gridSize)  ) {  
+                    acc.push(gridMatrix.slice(i, i + gridSize));
+                    }
+                    return acc;
+                }, []), gridSize, timer1, rounds1)
+                rounds1++;
+                }
+                timer1 = setInterval(func1)
+                const func2 = () => {
+                    if (ended1 === 1){
+                        console.log("Calculating heuristics...")
+                        ended2 = heuristicCalculation(gridMatrix.reduce((acc, curr, i) => {
+                            if ( !(i % gridSize)  ) {  
+                                acc.push(gridMatrix.slice(i, i + gridSize));
+                            }
+                            return acc;
+                        }, []), gridSize, timer2, rounds2)
+                        rounds2++;
+                    }
+                }
+                timer2 = setInterval(func2)
+                const func3 = () => {
+                    if (ended2 === 1){
+                        console.log("A* algorithm starts!")
+                        aSearch(gridMatrix.reduce((acc, curr, i) => {
+                            if ( !(i % gridSize)  ) {  
+                                acc.push(gridMatrix.slice(i, i + gridSize));
+                            }
+                            return acc;
+                        }, []), gridSize, timer2, rounds2)
+                        rounds3++;
+                    }
+                }
+                timer3 = setInterval(func3,100)
             }
-            timer2 = setInterval(func2,100)
         } else {
             clearInterval(timer1);
             clearInterval(timer2);
@@ -96,7 +170,7 @@ function Grid(props) {
                 return <Item optionsRef={optionsRef} getStarted={getStarted} getPressedDown={props.getPressedDown} innerRef={e.ref} setFreeIcons={setFreeIcons} freeIcons={freeIcons} iconSelected={iconSelected} setIconSelected={setIconSelected} key={i}/>
             })}
         </div>
-        <Options innerRef={optionsRef} getGridState={getData} setGridState={setData} started={started} toggleStart={toggleStart} setFreeIcons={setFreeIcons} freeIcons={freeIcons} iconSelected={iconSelected} setIconSelected={setIconSelected} setGridSize={handlegridSizeChange} gridSize={gridSize}/>  
+        <Options innerRef={optionsRef} toggleAlgorithm={toggleAlgorithm} getGridState={getData} setGridState={setData} started={started} toggleStart={toggleStart} setFreeIcons={setFreeIcons} freeIcons={freeIcons} iconSelected={iconSelected} setIconSelected={setIconSelected} setGridSize={handlegridSizeChange} gridSize={gridSize}/>  
         <ToastContainer
             position="top-right"
             autoClose={2000}

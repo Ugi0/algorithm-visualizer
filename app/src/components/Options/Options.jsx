@@ -56,6 +56,16 @@ function Options(props) {
     };
 
     return <div className="Options">
+        <div className='OptionsItem' id="dijkstraAlgorithm">
+            <button onClick={props.toggleAlgorithm} id="Dijkstra">
+                {"Dijkstra's algorithm"}
+            </button>
+        </div>
+        <div className='OptionsItem' id="A*Algorithm">
+        <button onClick={props.toggleAlgorithm} id="A*">
+                {"A* algorithm"}
+            </button>
+        </div>
         <div className='OptionsItem' id="gridWidthOption">
             gridSize
             <input onChange={(e) => props.setGridSize(parseInt(e.target.value))} value={props.gridSize} type="number" min={10} max={50} />

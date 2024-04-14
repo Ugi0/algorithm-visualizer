@@ -6,6 +6,7 @@ import './Item.css'
 function Item(props) {
     const [status, setStatus] = useState(0)
     const [distance, setDistance] = useState(100000)
+    const [heuristic, setHeuristic] = useState(100000)
     // 0 default, 1 Border, 2 Start, 3 End, 4 Searching, 5 Searched, 6 Path, 7 Slow Tile, 8 Searching Slow Tile, 9 Searched Slow Tile, 10 Path Slow Tile.
 
     if (props.innerRef) {
@@ -14,7 +15,9 @@ function Item(props) {
             resetState: function() { setStatus(0); },
             setState: function(value) { setStatus(value); },
             getDistance: function() { return distance; },
-            setDistance: function(value) { setDistance(value); }
+            setDistance: function(value) { setDistance(value); },
+            getHeuristic: function() {return heuristic},
+            setHeuristic: function(value) { setHeuristic(value);}
         }
     }
 

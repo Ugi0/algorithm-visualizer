@@ -1,5 +1,5 @@
 
-function search(matrix, gridSize, timer, rounds) {
+function aSearch(matrix, gridSize, timer, rounds) {
     //matrix coordinates i and j are in wrong places therefore i = the actual j and j = the actual i. With this in mind algorithm still functions correctly.
     // 0 default, 1 Border, 2 Start, 3 End, 4 Searching, 5 Searched, 6 Path, 7 Slow Tile, 8 Searching Slow Tile, 9 Searched Slow Tile, 10 Path Slow Tile.
 
@@ -10,8 +10,8 @@ function search(matrix, gridSize, timer, rounds) {
         var j_min = 0;
         var min = 100000;
         queue.forEach(([i,j]) => {
-            if (matrix[i][j].ref.current.getDistance() < min){
-                min = matrix[i][j].ref.current.getDistance()
+            if (matrix[i][j].ref.current.getDistance() + matrix[i][j].ref.current.getHeuristic() < min){
+                min = matrix[i][j].ref.current.getDistance() + matrix[i][j].ref.current.getHeuristic()
                 i_min = i
                 j_min = j
             }
@@ -63,28 +63,28 @@ function search(matrix, gridSize, timer, rounds) {
         })
         var min = 100000;
         path.forEach(([i,j]) => {
-            if (j-1 >= 0 && ![1,2,3,6,10].includes(matrix[i][j-1].ref.current.getState())){
+            if (j-1 >= 0 && [4,5].includes(matrix[i][j-1].ref.current.getState())){
                 if (matrix[i][j-1].ref.current.getDistance() < min){
                     min = matrix[i][j-1].ref.current.getDistance()
                     i_new = i
                     j_new = j-1
                 }
             }
-            if (i-1 >= 0 && ![1,2,3,6,10].includes(matrix[i-1][j].ref.current.getState())){
+            if (i-1 >= 0 && [4,5].includes(matrix[i-1][j].ref.current.getState())){
                 if (matrix[i-1][j].ref.current.getDistance() < min){
                     min = matrix[i-1][j].ref.current.getDistance()
                     i_new = i-1
                     j_new = j
                 }
             }
-            if (j+1 < gridSize && ![1,2,3,6,10].includes(matrix[i][j+1].ref.current.getState())){
+            if (j+1 < gridSize && [4,5].includes(matrix[i][j+1].ref.current.getState())){
                 if (matrix[i][j+1].ref.current.getDistance() < min){
                     min = matrix[i][j+1].ref.current.getDistance()
                     i_new = i
                     j_new = j+1
                 }
             }
-            if (i+1 < gridSize && ![1,2,3,6,10].includes(matrix[i+1][j].ref.current.getState())){
+            if (i+1 < gridSize && [4,5].includes(matrix[i+1][j].ref.current.getState())){
                 if (matrix[i+1][j].ref.current.getDistance() < min){
                     min = matrix[i+1][j].ref.current.getDistance()
                     i_new = i+1
@@ -159,4 +159,4 @@ function search(matrix, gridSize, timer, rounds) {
 }
 
 
-export default search;
+export default aSearch;
