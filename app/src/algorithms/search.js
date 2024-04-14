@@ -1,7 +1,7 @@
 
 function search(matrix, gridSize, timer, rounds) {
     //matrix coordinates i and j are in wrong places therefore i = the actual j and j = the actual i. With this in mind algorithm still functions correctly.
-    // 0 default, 1 Border, 2 Start, 3 End, 4 Searching, 5 Searched, 6 Path
+    // 0 default, 1 Border, 2 Start, 3 End, 4 Searching, 5 Searched, 6 Path, 7 Slow Tile, 8 Searching Slow Tile, 9 Searched Slow Tile
 
     
     // Goes through queue list and calculates the next tile to search. Also calculates distance value for the tile.
@@ -39,7 +39,12 @@ function search(matrix, gridSize, timer, rounds) {
                 }
             }
         })
-        matrix[i_min][j_min].ref.current.setDistance(min+1)
+        if (matrix[i_min][j_min].ref.current.getState() === 7){
+            matrix[i_min][j_min].ref.current.setDistance(min+10)
+        } else {
+            matrix[i_min][j_min].ref.current.setDistance(min+1)
+        }
+
         return [i_min,j_min]
     }
 
@@ -126,19 +131,19 @@ function search(matrix, gridSize, timer, rounds) {
     // Determines the next tiles in the queue from current list which contains all already searched tiles.
     const directions = (i,j) => {
         if (j-1 >= 0 && 
-            [0,3].includes(matrix[i][j-1].ref.current.getState())) {
+            [0,3,7].includes(matrix[i][j-1].ref.current.getState())) {
             queue.push([i, j-1])
         }
         if (i-1 >= 0 &&
-            [0,3].includes(matrix[i-1][j].ref.current.getState())) {
+            [0,3,7].includes(matrix[i-1][j].ref.current.getState())) {
             queue.push([i-1, j])
         }
         if (j+1 < gridSize &&
-            [0,3].includes(matrix[i][j+1].ref.current.getState())) {
+            [0,3,7].includes(matrix[i][j+1].ref.current.getState())) {
             queue.push([i, j+1])
         }
         if (i+1 < gridSize &&
-            [0,3].includes(matrix[i+1][j].ref.current.getState())) {
+            [0,3,7].includes(matrix[i+1][j].ref.current.getState())) {
             queue.push([i+1, j])
         }
     }
@@ -154,7 +159,10 @@ function search(matrix, gridSize, timer, rounds) {
     if (rounds !== 0){
         matrix.forEach((row,i) => {
             row.forEach((item,j) => {
-                if (item.ref.current.getState() === 2) {
+                if ([2,4,5,6,8,9].includes(item.ref.current.getState())){
+                    current.push([i,j])
+                }
+           /*     if (item.ref.current.getState() === 2) {
                     current.push([i,j])
                 } else if (item.ref.current.getState() === 4){
                     current.push([i,j])
@@ -162,14 +170,16 @@ function search(matrix, gridSize, timer, rounds) {
                     current.push([i,j])
                 } else if (item.ref.current.getState() === 6){
                     current.push([i,j])
-                }
+                } */
             })
         });
 
         current.forEach(([i,j]) => {
             directions(i,j)
-            if (![1,2,3,6].includes(matrix[i][j].ref.current.getState())){
+            if ([4].includes(matrix[i][j].ref.current.getState())){
                 matrix[i][j].ref.current.setState(5)
+            } else if ([8].includes(matrix[i][j].ref.current.getState())){
+                matrix[i][j].ref.current.setState(9)
             }
         })
 
@@ -184,7 +194,11 @@ function search(matrix, gridSize, timer, rounds) {
             }
         } else {
             let tile = getNextTile(row,col)
-            matrix[tile[0]][tile[1]].ref.current.setState(4);
+            if (matrix[tile[0]][tile[1]].ref.current.getState() === 7){
+                matrix[tile[0]][tile[1]].ref.current.setState(8);
+            } else {
+                matrix[tile[0]][tile[1]].ref.current.setState(4);
+            }  
         }
     }
 }
