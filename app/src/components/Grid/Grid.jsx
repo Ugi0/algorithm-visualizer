@@ -2,11 +2,13 @@ import Options from '../Options/Options';
 import { createRef, useState } from 'react';
 import './Grid.css'
 import Item from '../Item/Item';
+import distanceCalculation from '../../algorithms/distanceCalculation';
 import search from '../../algorithms/search';
 import { ToastContainer, toast, Flip } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-var timer;
+var timer1;
+var timer2;
 
 function Grid(props) {
     const [gridSize, setGridSize] = useState(20);
@@ -42,18 +44,33 @@ function Grid(props) {
         }
         if (!started) {
             var x = 0;
-            const func = () => { search(gridMatrix.reduce((acc, curr, i) => {
-
+            var y = 0;
+            var state = 0;
+            const func1 = () => { 
+                state = distanceCalculation(gridMatrix.reduce((acc, curr, i) => {
                 if ( !(i % gridSize)  ) {  
                   acc.push(gridMatrix.slice(i, i + gridSize));
                 }
                 return acc;
-              }, []), gridSize, timer, x)
+              }, []), gridSize, timer1, x)
               x++;
             }
-            timer = setInterval(func,100)
+            timer1 = setInterval(func1)
+            const func2 = () => {
+                if (state === 1){
+                    search(gridMatrix.reduce((acc, curr, i) => {
+                        if ( !(i % gridSize)  ) {  
+                            acc.push(gridMatrix.slice(i, i + gridSize));
+                        }
+                        return acc;
+                    }, []), gridSize, timer2, y)
+                    y++;
+                }
+            }
+            timer2 = setInterval(func2,100)
         } else {
-            clearInterval(timer);
+            clearInterval(timer1);
+            clearInterval(timer2);
         }
         setStarted(!started);
     }

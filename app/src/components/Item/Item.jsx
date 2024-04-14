@@ -6,7 +6,7 @@ import './Item.css'
 function Item(props) {
     const [status, setStatus] = useState(0)
     const [distance, setDistance] = useState(100000)
-    // 0 default, 1 Border, 2 Start, 3 End, 4 Searching, 5 Searched, 6 Path, 7 Slow Tile, 8 Searching Slow Tile, 9 Searched Slow Tile
+    // 0 default, 1 Border, 2 Start, 3 End, 4 Searching, 5 Searched, 6 Path, 7 Slow Tile, 8 Searching Slow Tile, 9 Searched Slow Tile, 10 Path Slow Tile.
 
     if (props.innerRef) {
         props.innerRef.current = { 
@@ -59,6 +59,8 @@ function Item(props) {
                 return '#9282DA'
             case 9:
                 return '#6A8CBC'
+            case 10:
+                return '#D27069'
             default:
                 return "#444444"
         }
