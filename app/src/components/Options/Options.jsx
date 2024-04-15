@@ -66,6 +66,16 @@ function Options(props) {
                 {"A* algorithm"}
             </button>
         </div>
+        <div className='OptionsItem' id="Breadth-first search">
+        <button onClick={props.toggleAlgorithm} id="BFS">
+                {"Breadth-first search"}
+            </button>
+        </div>
+        <div className='OptionsItem' id="Depth-first search">
+        <button onClick={props.toggleAlgorithm} id="DFS">
+                {"Depth-first search"}
+            </button>
+        </div>
         <div className='OptionsItem' id="gridWidthOption">
             gridSize
             <input onChange={(e) => props.setGridSize(parseInt(e.target.value))} value={props.gridSize} type="number" min={10} max={50} />

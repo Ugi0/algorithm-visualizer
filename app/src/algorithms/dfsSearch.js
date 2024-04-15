@@ -1,14 +1,13 @@
 
-function dijkstraSearch(matrix, gridSize, timer, rounds) {
+function dfsSearch(matrix, gridSize, timer, rounds) {
     //matrix coordinates i and j are in wrong places therefore i = the actual j and j = the actual i. With this in mind algorithm still functions correctly.
     // 0 default, 1 Border, 2 Start, 3 End, 4 Searching, 5 Searched, 6 Path, 7 Slow Tile, 8 Searching Slow Tile, 9 Searched Slow Tile, 10 Path Slow Tile.
 
-    
     // Calculates the shortest distance neighbour for given coordinates.
     const calculateDistance = (i,j) => {
         var i_min = 0;
         var j_min = 0;
-        var min = 100000;
+        var min = 100001;
         if (j-1 >= 0) {
             if (matrix[i][j-1].ref.current.getDistance() < min) {
                 min = matrix[i][j-1].ref.current.getDistance()
@@ -37,28 +36,41 @@ function dijkstraSearch(matrix, gridSize, timer, rounds) {
                 j_min = j
             }
         }
-        if (matrix[i_min][j_min].ref.current.getState() === 7){
-            matrix[i_min][j_min].ref.current.setDistance(min+5)
-        } else {
-            matrix[i_min][j_min].ref.current.setDistance(min+1)
-        }
-        
-    }
-    //Goes through queue list and calculates the next tile to search
-    const getNextTile = (row,col) => {
-        var i_min = row;
-        var j_min = col;
-        var min = 100000;
-        queue.forEach(([i,j]) => {
-            if (matrix[i][j].ref.current.getDistance() < min){
-                min = matrix[i][j].ref.current.getDistance()
-                i_min = i
-                j_min = j
-            }
-        }) 
-        return [i_min,j_min]
-    }
+        matrix[i_min][j_min].ref.current.setDistance(min+1)
+    } 
 
+    //Goes through queue list and calculates the next tile to search
+    const getNextTile = (x,y) => {
+        var i_max = x;
+        var j_max = y;
+        var max = 0; 
+        if (j_max-1 >= 0
+            && matrix[i_max][j_max-1].ref.current.getDistance() >= max
+            && [0,7].includes(matrix[i_max][j_max-1].ref.current.getState())){
+                return [i_max,j_max-1];
+        } else if (i_max-1 >= 0 
+            && matrix[i_max-1][j_max].ref.current.getDistance() >= max
+            && [0,7].includes(matrix[i_max-1][j_max].ref.current.getState())){
+                return [i_max-1,j_max];
+        } else if (j_max+1 < gridSize 
+            && matrix[i_max][j_max+1].ref.current.getDistance() >= max
+            && [0,7].includes(matrix[i_max][j_max+1].ref.current.getState())){
+                return [i_max,j_max+1];
+        } else if (i_max+1 < gridSize 
+            && matrix[i_max+1][j_max].ref.current.getDistance() >= max
+            && [0,7].includes(matrix[i_max+1][j_max].ref.current.getState())){
+                return [i_max+1,j_max];
+        } else {
+            queue.forEach(([i,j]) => {
+                if (matrix[i][j].ref.current.getDistance() >= max){
+                    max = matrix[i][j].ref.current.getDistance()
+                    i_max = i
+                    j_max = j
+                }
+            })
+            return [i_max,j_max]
+        }
+    }
 
     // Checks if the goal tile is in queue list.
     const goalCheck = () => {
@@ -93,7 +105,7 @@ function dijkstraSearch(matrix, gridSize, timer, rounds) {
     const buildPath = () => {
         var i_new = 0;
         var j_new = 0;
-        let path = []
+        let path = [];
         matrix.forEach((row,x) => {
             row.forEach((item,y) => {
                 if ([3,6,10].includes(item.ref.current.getState())){
@@ -175,8 +187,34 @@ function dijkstraSearch(matrix, gridSize, timer, rounds) {
             })
         })
     }
+    
+    if (rounds === 1){
+        var x = 0;
+        var y = 0;
+        matrix.forEach((row,i) => {
+            row.forEach((item,j) => {
+                if ([2].includes(item.ref.current.getState())){
+                    x = i
+                    y = j
+                }
+            })
+        })
+        if (y-1 >= 0 && ([0,7].includes(matrix[x][y-1].ref.current.getState()))){
+            matrix[x][y-1].ref.current.setState(4);
+            matrix[x][y-1].ref.current.setDistance(1);
+        } else if (x-1 >= 0 && ([0,7].includes(matrix[x-1][y].ref.current.getState()))){
+            matrix[x-1][y].ref.current.setState(4)
+            matrix[x-1][y].ref.current.setDistance(1)
+        } else if (y+1 < gridSize && ([0,7].includes(matrix[x][y+1].ref.current.getState()))){
+            matrix[x-1][y].ref.current.setState(4)
+            matrix[x-1][y].ref.current.setDistance(1)
+        } else if (x+1 < gridSize && ([0,7].includes(matrix[x+1][y].ref.current.getState()))){
+            matrix[x+1][y].ref.current.setState(4)
+            matrix[x+1][y].ref.current.setDistance(1)
+        } 
+    }
 
-    if (rounds !== 0){
+    if (rounds > 1){
         matrix.forEach((row,i) => {
             row.forEach((item,j) => {
                 if ([2,4,5,6,8,9,10].includes(item.ref.current.getState())){
@@ -184,14 +222,9 @@ function dijkstraSearch(matrix, gridSize, timer, rounds) {
                 }
             })
         });
-    
+
         current.forEach(([i,j]) => {
             directions(i,j)
-            if ([4].includes(matrix[i][j].ref.current.getState())){
-                matrix[i][j].ref.current.setState(5)
-            } else if ([8].includes(matrix[i][j].ref.current.getState())){
-                matrix[i][j].ref.current.setState(9)
-            }
         })
     
         const row = matrix.findIndex(row => row.map(e => e.ref.current.getState()).includes(2));
@@ -204,7 +237,24 @@ function dijkstraSearch(matrix, gridSize, timer, rounds) {
                 buildPath()
             }
         } else {
-            let tile = getNextTile(row,col)
+            var x = 0;
+            var y = 0;
+            matrix.forEach((row,i) => {
+                row.forEach((item,j) => {
+                    if ([4,8].includes(item.ref.current.getState())){
+                        x = i
+                        y = j
+                    }
+                })
+            })
+            let tile = getNextTile(x,y)
+            current.forEach(([i,j]) => {
+                if ([4].includes(matrix[i][j].ref.current.getState())){
+                    matrix[i][j].ref.current.setState(5)
+                } else if ([8].includes(matrix[i][j].ref.current.getState())){
+                    matrix[i][j].ref.current.setState(9)
+                }
+            })
             if (matrix[tile[0]][tile[1]].ref.current.getState() !== 2){
                 if (matrix[tile[0]][tile[1]].ref.current.getState() === 7){
                     matrix[tile[0]][tile[1]].ref.current.setState(8);
@@ -218,4 +268,4 @@ function dijkstraSearch(matrix, gridSize, timer, rounds) {
 }
 
 
-export default dijkstraSearch;
+export default dfsSearch;

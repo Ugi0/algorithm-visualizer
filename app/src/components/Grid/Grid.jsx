@@ -6,12 +6,13 @@ import distanceCalculation from "../../algorithms/distanceCalculation";
 import heuristicCalculation from '../../algorithms/heuristicCalculation';
 import dijkstraSearch from "../../algorithms/dijkstraSearch";
 import aSearch from '../../algorithms/aSearch';
+import bfsSearch from '../../algorithms/bfsSearch';
+import dfsSearch from '../../algorithms/dfsSearch'
 import { ToastContainer, toast, Flip } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 var timer1;
 var timer2;
-var timer3;
 
 function Grid(props) {
     const [gridSize, setGridSize] = useState(20);
@@ -30,10 +31,6 @@ function Grid(props) {
         return `${gridSize};${freeIcons.join("")};${gridMatrix.map(e => e.ref.current.getState()).join(";")}`
     }
 
-    const getAlgorithm = () => {
-        return algorithm
-    }
-
     const setData = (data) => {
         const parts = data.split(";")
         setGridSize(parseInt(parts[0]));
@@ -49,12 +46,16 @@ function Grid(props) {
         var click = event.target.id;
         switch (click) {
             case 'Dijkstra':
-                console.log('Dijkstra');
                 setAlgorithm(1);
                 break;
             case 'A*':
-                console.log('A*');
                 setAlgorithm(2);
+                break;
+            case 'BFS':
+                setAlgorithm(3);
+                break;
+            case 'DFS':
+                setAlgorithm(4);
                 break;
             default:
                 return false;
@@ -73,74 +74,74 @@ function Grid(props) {
         if (!started) {
             var rounds1 = 0;
             var rounds2 = 0;
-            var rounds3 = 0;
-            var ended1 = 0;
-            var ended2 = 0;
+            var ended = 0;
             if (algorithm === 1){
-                console.log("Dijkstra's algorithm selected")
-                const func1 = () => { 
-                    console.log("Calculating distance...")
-                    ended1 = distanceCalculation(gridMatrix.reduce((acc, curr, i) => {
-                    if ( !(i % gridSize)  ) {  
-                    acc.push(gridMatrix.slice(i, i + gridSize));
-                    }
-                    return acc;
-                }, []), gridSize, timer1, rounds1)
-                rounds1++;
+                console.log("Dijkstra's algorithm starts!")
+                const func = () => {
+                    console.log("Dijkstra's algorithm searching...")
+                    dijkstraSearch(gridMatrix.reduce((acc, curr, i) => {
+                        if ( !(i % gridSize)  ) {  
+                            acc.push(gridMatrix.slice(i, i + gridSize));
+                        }
+                        return acc;
+                    }, []), gridSize, timer1, rounds1)
+                    rounds1++;
                 }
-                timer1 = setInterval(func1)
-                const func2 = () => {
-                    if (ended1 === 1){
-                        console.log("Dijkstra's algorithm starts!")
-                        dijkstraSearch(gridMatrix.reduce((acc, curr, i) => {
-                            if ( !(i % gridSize)  ) {  
-                                acc.push(gridMatrix.slice(i, i + gridSize));
-                            }
-                            return acc;
-                        }, []), gridSize, timer2, rounds2)
-                        rounds2++;
-                    }
-                }
-                timer2 = setInterval(func2,100)
+                timer1 = setInterval(func)
             } if (algorithm === 2) {
-                console.log("A* algorithm selected")
-                const func1 = () => { 
-                    console.log("Calculating distances...")
-                    ended1 = distanceCalculation(gridMatrix.reduce((acc, curr, i) => {
-                    if ( !(i % gridSize)  ) {  
-                    acc.push(gridMatrix.slice(i, i + gridSize));
-                    }
-                    return acc;
-                }, []), gridSize, timer1, rounds1)
-                rounds1++;
+                console.log("A* algorithm starts!")
+                const func1 = () => {
+                    console.log("Calculating heuristics...")
+                    ended = heuristicCalculation(gridMatrix.reduce((acc, curr, i) => {
+                        if ( !(i % gridSize)  ) {  
+                            acc.push(gridMatrix.slice(i, i + gridSize));
+                        }
+                        return acc;
+                    }, []), gridSize, timer1, rounds1)
+                    rounds1++;
                 }
                 timer1 = setInterval(func1)
                 const func2 = () => {
-                    if (ended1 === 1){
-                        console.log("Calculating heuristics...")
-                        ended2 = heuristicCalculation(gridMatrix.reduce((acc, curr, i) => {
-                            if ( !(i % gridSize)  ) {  
-                                acc.push(gridMatrix.slice(i, i + gridSize));
-                            }
-                            return acc;
-                        }, []), gridSize, timer2, rounds2)
-                        rounds2++;
-                    }
-                }
-                timer2 = setInterval(func2)
-                const func3 = () => {
-                    if (ended2 === 1){
-                        console.log("A* algorithm starts!")
+                    if (ended === 1){
+                        console.log("A* algorithm searching...")
                         aSearch(gridMatrix.reduce((acc, curr, i) => {
                             if ( !(i % gridSize)  ) {  
                                 acc.push(gridMatrix.slice(i, i + gridSize));
                             }
                             return acc;
                         }, []), gridSize, timer2, rounds2)
-                        rounds3++;
+                        rounds2++;
                     }
                 }
-                timer3 = setInterval(func3,100)
+                timer2 = setInterval(func2) 
+            }
+            if (algorithm === 3){
+                console.log("Breadth-first search starts!")
+                const func = () => {
+                    console.log("Breadth-first search searching...")
+                    bfsSearch(gridMatrix.reduce((acc, curr, i) => {
+                        if ( !(i % gridSize)  ) {  
+                            acc.push(gridMatrix.slice(i, i + gridSize));
+                        }
+                        return acc;
+                    }, []), gridSize, timer1, rounds1)
+                    rounds1++;
+                }
+                timer1 = setInterval(func)
+            }
+            if (algorithm === 4){
+                console.log("Depth-first search starts!")
+                const func = () => {
+                    console.log("Depth-first search searching...")
+                    dfsSearch(gridMatrix.reduce((acc, curr, i) => {
+                        if ( !(i % gridSize)  ) {  
+                            acc.push(gridMatrix.slice(i, i + gridSize));
+                        }
+                        return acc;
+                    }, []), gridSize, timer1, rounds1)
+                    rounds1++;
+                }
+                timer1 = setInterval(func)
             }
         } else {
             clearInterval(timer1);

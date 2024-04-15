@@ -63,7 +63,7 @@ function distanceCalculation(matrix, gridSize, timer, rounds){
             matrix[i_min][j_min].ref.current.setDistance(min+10000)
         } else {
             if (matrix[i_min][j_min].ref.current.getState() === 7){
-                matrix[i_min][j_min].ref.current.setDistance(min+3)
+                matrix[i_min][j_min].ref.current.setDistance(min+1)
             } else {
                 matrix[i_min][j_min].ref.current.setDistance(min+1)
             }
@@ -92,16 +92,15 @@ function distanceCalculation(matrix, gridSize, timer, rounds){
         const row = matrix.findIndex(row => row.map(e => e.ref.current.getState()).includes(2));
         const col = matrix[row].map(e => e.ref.current.getState()).indexOf(2);
         matrix[row][col].ref.current.setDistance(0)
+        complete = 1;
     }
     
     if (rounds !== 0){
         var x = 0;
         matrix.forEach((row,i) => {
             row.forEach((item,j) => {
-                if (item.ref.current.getState() === 3) {
-                    if (goalCheck(i,j) === 1) {
-                        complete = 1;
-                    }
+                if (item.ref.current.getDistance() === 100000) {
+                    complete = 1;
                 }
                 if (item.ref.current.getDistance() !== 100000){
                     current.push([i,j])
@@ -113,7 +112,7 @@ function distanceCalculation(matrix, gridSize, timer, rounds){
         })
         getNextDistance()
     }
-    if (complete === 1){
+    if (complete === 0){
         clearInterval(timer);
         return 1;
     } else {

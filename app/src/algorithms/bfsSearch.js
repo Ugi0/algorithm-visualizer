@@ -1,5 +1,5 @@
 
-function dijkstraSearch(matrix, gridSize, timer, rounds) {
+function bfsSearch(matrix, gridSize, timer, rounds) {
     //matrix coordinates i and j are in wrong places therefore i = the actual j and j = the actual i. With this in mind algorithm still functions correctly.
     // 0 default, 1 Border, 2 Start, 3 End, 4 Searching, 5 Searched, 6 Path, 7 Slow Tile, 8 Searching Slow Tile, 9 Searched Slow Tile, 10 Path Slow Tile.
 
@@ -37,13 +37,9 @@ function dijkstraSearch(matrix, gridSize, timer, rounds) {
                 j_min = j
             }
         }
-        if (matrix[i_min][j_min].ref.current.getState() === 7){
-            matrix[i_min][j_min].ref.current.setDistance(min+5)
-        } else {
-            matrix[i_min][j_min].ref.current.setDistance(min+1)
-        }
-        
+        matrix[i_min][j_min].ref.current.setDistance(min+1)
     }
+
     //Goes through queue list and calculates the next tile to search
     const getNextTile = (row,col) => {
         var i_min = row;
@@ -58,7 +54,6 @@ function dijkstraSearch(matrix, gridSize, timer, rounds) {
         }) 
         return [i_min,j_min]
     }
-
 
     // Checks if the goal tile is in queue list.
     const goalCheck = () => {
@@ -218,4 +213,4 @@ function dijkstraSearch(matrix, gridSize, timer, rounds) {
 }
 
 
-export default dijkstraSearch;
+export default bfsSearch;

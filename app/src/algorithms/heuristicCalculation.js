@@ -2,25 +2,25 @@ function heuristicCalculation(matrix, gridSize, timer, rounds){
 
     const goalCheck = (i,j) => {
         var finished = 0;
-        if (j-1 >= 0 && matrix[i][j-1].ref.current.getHeuristic() !== 100000){
-            finished = 1
-        } else {
-            finished = 0
+        if (j-1 < 0) {
+            finished++;
+        } else if (matrix[i][j-1].ref.current.getHeuristic() !== 100000) {
+            finished++;
         }
-        if (i-1 >= 0 && matrix[i-1][j].ref.current.getHeuristic() !== 100000){
-            finished = 1
-        } else {
-            finished = 0
+        if (i-1 < 0) {
+            finished++;
+        } else if (matrix[i][j-1].ref.current.getHeuristic() !== 100000) {
+            finished++;
         }
-        if (j+1 < gridSize && matrix[i][j+1].ref.current.getHeuristic() !== 100000){
-            finished = 1
-        } else {
-            finished = 0
+        if (j+1 >= gridSize){
+            finished++;
+        } else if (matrix[i][j+1].ref.current.getHeuristic() !== 100000){
+            finished++;
         }
-        if (i+1 < gridSize && matrix[i+1][j].ref.current.getHeuristic() !== 100000){
-            finished = 1
-        } else {
-            finished = 0
+        if (i+1 >= gridSize) {
+            finished++;
+        } else if (matrix[i+1][j].ref.current.getHeuristic() !== 100000){
+            finished++;
         }
         return finished;
     }
@@ -63,7 +63,7 @@ function heuristicCalculation(matrix, gridSize, timer, rounds){
             matrix[i_min][j_min].ref.current.setHeuristic(min+10000)
         } else {
             if (matrix[i_min][j_min].ref.current.getState() === 7){
-                matrix[i_min][j_min].ref.current.setHeuristic(min+3)
+                matrix[i_min][j_min].ref.current.setHeuristic(min+5)
             } else {
                 matrix[i_min][j_min].ref.current.setHeuristic(min+1)
             }
@@ -99,12 +99,20 @@ function heuristicCalculation(matrix, gridSize, timer, rounds){
         matrix.forEach((row,i) => {
             row.forEach((item,j) => {
                 if (item.ref.current.getState() === 2) {
-                    if (goalCheck(i,j) === 1) {
+                    if (goalCheck(i,j) === 4){
                         complete = 1;
-                    }
+                    }  
                 }
                 if (item.ref.current.getHeuristic() !== 100000){
-                    current.push([i,j])
+                    if (j-1 >= 0 && matrix[i][j-1].ref.current.getHeuristic() === 100000){
+                        current.push([i,j])
+                    } else if(i-1 >= 0 && matrix[i-1][j].ref.current.getHeuristic() === 100000){
+                        current.push([i,j])
+                    } else if (j+1 < gridSize && matrix[i][j+1].ref.current.getHeuristic() === 100000){
+                        current.push([i,j])
+                    } else if (i+1 < gridSize && matrix[i+1][j].ref.current.getHeuristic() === 100000){
+                        current.push([i,j])
+                    } 
                 }
             })
         })
