@@ -28,6 +28,10 @@ function Options(props) {
                 {props.started ? "Stop" : "Start"}
             </button>
         </div>
+        <div className='OptionsItem' id='reset'>
+            <button onClick={() => props.resetGrid(props.gridSize)}>Reset Grid
+            </button>
+        </div>
     </div>
 }
 
