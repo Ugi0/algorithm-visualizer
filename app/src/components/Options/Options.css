@@ -1,6 +1,8 @@
 .Options {
+    position: absolute;
     align-self: center;
     margin: 50px;
+    right: 20px;
 }
 
 .OptionsItem {
@@ -10,4 +12,13 @@
 
 #startAndEndFlag:hover {
     cursor: pointer;
+}
+
+.slowTile:hover {
+    cursor: pointer;
+}
+
+.icons {
+    justify-content: center;
+    align-items: center;
 }

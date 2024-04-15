@@ -6,4 +6,8 @@
     gap: 1px;
     padding: 2px;
     grid-auto-rows: 1fr;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }

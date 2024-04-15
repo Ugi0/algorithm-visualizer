@@ -1,0 +1,271 @@
+
+function dfsSearch(matrix, gridSize, timer, rounds) {
+    //matrix coordinates i and j are in wrong places therefore i = the actual j and j = the actual i. With this in mind algorithm still functions correctly.
+    // 0 default, 1 Border, 2 Start, 3 End, 4 Searching, 5 Searched, 6 Path, 7 Slow Tile, 8 Searching Slow Tile, 9 Searched Slow Tile, 10 Path Slow Tile.
+
+    // Calculates the shortest distance neighbour for given coordinates.
+    const calculateDistance = (i,j) => {
+        var i_min = 0;
+        var j_min = 0;
+        var min = 100001;
+        if (j-1 >= 0) {
+            if (matrix[i][j-1].ref.current.getDistance() < min) {
+                min = matrix[i][j-1].ref.current.getDistance()
+                i_min = i
+                j_min = j
+            }
+        }
+        if (i-1 >= 0) {
+            if (matrix[i-1][j].ref.current.getDistance() < min) {
+                min = matrix[i-1][j].ref.current.getDistance()
+                i_min = i
+                j_min = j
+            }
+        }
+        if (j+1 < gridSize) {
+            if (matrix[i][j+1].ref.current.getDistance() < min) {
+                min = matrix[i][j+1].ref.current.getDistance()
+                i_min = i
+                j_min = j
+            }
+        }
+        if (i+1 < gridSize) {
+            if (matrix[i+1][j].ref.current.getDistance() < min) {
+                min = matrix[i+1][j].ref.current.getDistance()
+                i_min = i
+                j_min = j
+            }
+        }
+        matrix[i_min][j_min].ref.current.setDistance(min+1)
+    } 
+
+    //Goes through queue list and calculates the next tile to search
+    const getNextTile = (x,y) => {
+        var i_max = x;
+        var j_max = y;
+        var max = 0; 
+        if (j_max-1 >= 0
+            && matrix[i_max][j_max-1].ref.current.getDistance() >= max
+            && [0,7].includes(matrix[i_max][j_max-1].ref.current.getState())){
+                return [i_max,j_max-1];
+        } else if (i_max-1 >= 0 
+            && matrix[i_max-1][j_max].ref.current.getDistance() >= max
+            && [0,7].includes(matrix[i_max-1][j_max].ref.current.getState())){
+                return [i_max-1,j_max];
+        } else if (j_max+1 < gridSize 
+            && matrix[i_max][j_max+1].ref.current.getDistance() >= max
+            && [0,7].includes(matrix[i_max][j_max+1].ref.current.getState())){
+                return [i_max,j_max+1];
+        } else if (i_max+1 < gridSize 
+            && matrix[i_max+1][j_max].ref.current.getDistance() >= max
+            && [0,7].includes(matrix[i_max+1][j_max].ref.current.getState())){
+                return [i_max+1,j_max];
+        } else {
+            queue.forEach(([i,j]) => {
+                if (matrix[i][j].ref.current.getDistance() >= max){
+                    max = matrix[i][j].ref.current.getDistance()
+                    i_max = i
+                    j_max = j
+                }
+            })
+            return [i_max,j_max]
+        }
+    }
+
+    // Checks if the goal tile is in queue list.
+    const goalCheck = () => {
+        var found = 0;
+        queue.forEach(([i,j]) => {
+            if (matrix[i][j].ref.current.getState() === 3){
+                found = 1
+            }
+        })
+        return found;
+    }
+
+    // Checks if the path has reached to Start
+    const pathEndCheck = (i,j) => {
+        if (j-1 >= 0 && ([3,6,10].includes(matrix[i][j-1].ref.current.getState()))){
+            return 1;
+        }
+        if (i-1 >= 0 && ([3,6,10].includes(matrix[i-1][j].ref.current.getState()))){
+            return 1;
+        }
+        if (j+1 < gridSize && ([3,6,10].includes(matrix[i][j+1].ref.current.getState()))){
+            return 1;
+        }
+        if (i+1 < gridSize && ([3,6,10].includes(matrix[i+1][j].ref.current.getState()))){
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    // builds path from End one tile at a time.
+    const buildPath = () => {
+        var i_new = 0;
+        var j_new = 0;
+        let path = [];
+        matrix.forEach((row,x) => {
+            row.forEach((item,y) => {
+                if ([3,6,10].includes(item.ref.current.getState())){
+                    path.push([x,y])
+                }
+            })
+        })
+        var min = 100000;
+        path.forEach(([i,j]) => {
+            if (j-1 >= 0 && [4,5,8,9].includes(matrix[i][j-1].ref.current.getState())){
+                if (matrix[i][j-1].ref.current.getDistance() < min){
+                    min = matrix[i][j-1].ref.current.getDistance()
+                    i_new = i
+                    j_new = j-1
+                }
+            }
+            if (i-1 >= 0 && [4,5,8,9].includes(matrix[i-1][j].ref.current.getState())){
+                if (matrix[i-1][j].ref.current.getDistance() < min){
+                    min = matrix[i-1][j].ref.current.getDistance()
+                    i_new = i-1
+                    j_new = j
+                }
+            }
+            if (j+1 < gridSize && [4,5,8,9].includes(matrix[i][j+1].ref.current.getState())){
+                if (matrix[i][j+1].ref.current.getDistance() < min){
+                    min = matrix[i][j+1].ref.current.getDistance()
+                    i_new = i
+                    j_new = j+1
+                }
+            }
+            if (i+1 < gridSize && [4,5,8,9].includes(matrix[i+1][j].ref.current.getState())){
+                if (matrix[i+1][j].ref.current.getDistance() < min){
+                    min = matrix[i+1][j].ref.current.getDistance()
+                    i_new = i+1
+                    j_new = j
+                }
+            }
+        })
+        if (matrix[i_new][j_new].ref.current.getState() === 9){
+            matrix[i_new][j_new].ref.current.setState(10)
+        } else {
+            matrix[i_new][j_new].ref.current.setState(6)
+        }
+        return ([i_new,j_new])
+    } 
+
+    // Determines the next tiles in the queue from current list which contains all already searched tiles.
+    const directions = (i,j) => {
+        if (j-1 >= 0 && [0,3,7].includes(matrix[i][j-1].ref.current.getState())) {
+            calculateDistance(i,j-1)
+            queue.push([i, j-1])
+        }
+        if (i-1 >= 0 && [0,3,7].includes(matrix[i-1][j].ref.current.getState())) {
+            calculateDistance(i-1,j)
+            queue.push([i-1, j])
+        }
+        if (j+1 < gridSize && [0,3,7].includes(matrix[i][j+1].ref.current.getState())) {
+            calculateDistance(i,j+1)
+            queue.push([i, j+1])
+        }
+        if (i+1 < gridSize && [0,3,7].includes(matrix[i+1][j].ref.current.getState())) {
+            calculateDistance(i+1,j)
+            queue.push([i+1, j])
+        }
+    }
+    let current = [];
+    let queue = [];
+
+    if (rounds === 0){
+        var x = 0;
+        var y = 0;
+        matrix.forEach((row,i) => {
+            row.forEach((item,j) => {
+                if ([2].includes(item.ref.current.getState())){
+                    item.ref.current.setDistance(0);
+                    x = i
+                    y = j
+                }
+            })
+        })
+    }
+    
+    if (rounds === 1){
+        var x = 0;
+        var y = 0;
+        matrix.forEach((row,i) => {
+            row.forEach((item,j) => {
+                if ([2].includes(item.ref.current.getState())){
+                    x = i
+                    y = j
+                }
+            })
+        })
+        if (y-1 >= 0 && ([0,7].includes(matrix[x][y-1].ref.current.getState()))){
+            matrix[x][y-1].ref.current.setState(4);
+            matrix[x][y-1].ref.current.setDistance(1);
+        } else if (x-1 >= 0 && ([0,7].includes(matrix[x-1][y].ref.current.getState()))){
+            matrix[x-1][y].ref.current.setState(4)
+            matrix[x-1][y].ref.current.setDistance(1)
+        } else if (y+1 < gridSize && ([0,7].includes(matrix[x][y+1].ref.current.getState()))){
+            matrix[x-1][y].ref.current.setState(4)
+            matrix[x-1][y].ref.current.setDistance(1)
+        } else if (x+1 < gridSize && ([0,7].includes(matrix[x+1][y].ref.current.getState()))){
+            matrix[x+1][y].ref.current.setState(4)
+            matrix[x+1][y].ref.current.setDistance(1)
+        } 
+    }
+
+    if (rounds > 1){
+        matrix.forEach((row,i) => {
+            row.forEach((item,j) => {
+                if ([2,4,5,6,8,9,10].includes(item.ref.current.getState())){
+                    current.push([i,j])
+                }
+            })
+        });
+
+        current.forEach(([i,j]) => {
+            directions(i,j)
+        })
+    
+        const row = matrix.findIndex(row => row.map(e => e.ref.current.getState()).includes(2));
+        const col = matrix[row].map(e => e.ref.current.getState()).indexOf(2);
+        if (goalCheck() === 1){
+            if (pathEndCheck(row,col) === 1) {
+                console.log("FOUND!")
+                clearInterval(timer);
+            } else {
+                buildPath()
+            }
+        } else {
+            var x = 0;
+            var y = 0;
+            matrix.forEach((row,i) => {
+                row.forEach((item,j) => {
+                    if ([4,8].includes(item.ref.current.getState())){
+                        x = i
+                        y = j
+                    }
+                })
+            })
+            let tile = getNextTile(x,y)
+            current.forEach(([i,j]) => {
+                if ([4].includes(matrix[i][j].ref.current.getState())){
+                    matrix[i][j].ref.current.setState(5)
+                } else if ([8].includes(matrix[i][j].ref.current.getState())){
+                    matrix[i][j].ref.current.setState(9)
+                }
+            })
+            if (matrix[tile[0]][tile[1]].ref.current.getState() !== 2){
+                if (matrix[tile[0]][tile[1]].ref.current.getState() === 7){
+                    matrix[tile[0]][tile[1]].ref.current.setState(8);
+                } else {
+                    matrix[tile[0]][tile[1]].ref.current.setState(4);
+                }  
+            }
+        }
+    }
+
+}
+
+
+export default dfsSearch;
