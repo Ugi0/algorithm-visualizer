@@ -171,10 +171,7 @@ function Grid(props) {
                 return <Item optionsRef={optionsRef} getStarted={getStarted} getPressedDown={props.getPressedDown} innerRef={e.ref} setFreeIcons={setFreeIcons} freeIcons={freeIcons} iconSelected={iconSelected} setIconSelected={setIconSelected} key={i}/>
             })}
         </div>
-<<<<<<< HEAD
-        <Options started={started} toggleStart={toggleStart} setFreeIcons={setFreeIcons} freeIcons={freeIcons} iconSelected={iconSelected} setIconSelected={setIconSelected} setGridSize={handlegridSizeChange} gridSize={gridSize} resetGrid={resetGrid}/>  
-=======
-        <Options innerRef={optionsRef} toggleAlgorithm={toggleAlgorithm} getGridState={getData} setGridState={setData} started={started} toggleStart={toggleStart} setFreeIcons={setFreeIcons} freeIcons={freeIcons} iconSelected={iconSelected} setIconSelected={setIconSelected} setGridSize={handlegridSizeChange} gridSize={gridSize}/>  
+        <Options innerRef={optionsRef} toggleAlgorithm={toggleAlgorithm} getGridState={getData} setGridState={setData} started={started} toggleStart={toggleStart} setFreeIcons={setFreeIcons} freeIcons={freeIcons} iconSelected={iconSelected} setIconSelected={setIconSelected} setGridSize={handlegridSizeChange} gridSize={gridSize} resetGrid={resetGrid}/>  
         <ToastContainer
             position="top-right"
             autoClose={2000}
@@ -188,7 +185,6 @@ function Grid(props) {
             theme="dark"
             transition={Flip}    
         />
->>>>>>> 12bbc46524cd5f0cc61915e1b90c616fe8867f31
     </>
 }
 
