@@ -17,7 +17,7 @@ function Grid(props) {
     const [iconSelected, setIconSelected] = useState(false);
     const [freeIcons, setFreeIcons] = useState([2,3])
     const [started, setStarted] = useState(false);
-    const [algorithm, setAlgorithm] = useState(0);
+    const [algorithm, setAlgorithm] = useState(1);
 
     const [gridMatrix, setGridMatrix] = useState(Array.from(new Array(gridSize * gridSize)).map((_,i) => {return {ref: createRef()}}))
 
@@ -40,23 +40,19 @@ function Grid(props) {
         }), 200)
     }
 
-    const toggleAlgorithm = (event) => {
-        var click = event.target.id;
-        switch (click) {
-            case 'Dijkstra':
-                setAlgorithm(1);
-                break;
-            case 'A*':
-                setAlgorithm(2);
-                break;
-            case 'BFS':
-                setAlgorithm(3);
-                break;
-            case 'DFS':
-                setAlgorithm(4);
-                break;
+    //A function to get the required algorithm functions, removes code repetition
+    const getAlgorithm = (algorithm) => {
+        switch (algorithm) {
+            case 1:
+                return ["Dijkstra's algorithm", dijkstraSearch]
+            case 2:
+                return ["A* algorithm", aSearch] //An empty function since this case should never happen
+            case 3:
+                return ["Breadth-first search", bfsSearch]
+            case 4:
+                return ["Depth first search", dfsSearch]
             default:
-                return false;
+                return
         }
     }
 
@@ -69,78 +65,32 @@ function Grid(props) {
             toast("You need to set start and end nodes");
             return
         }
+        const gridAs2dMatrix = gridMatrix.reduce((acc, curr, i) => {
+            if ( !(i % gridSize)  ) {  
+                acc.push(gridMatrix.slice(i, i + gridSize));
+            }
+            return acc;
+        }, [])
+
         if (!started) {
             var rounds1 = 0;
             var rounds2 = 0;
             var ended = 0;
-            if (algorithm === 1){
-                console.log("Dijkstra's algorithm starts!")
-                const func = () => {
-                    console.log("Dijkstra's algorithm searching...")
-                    dijkstraSearch(gridMatrix.reduce((acc, curr, i) => {
-                        if ( !(i % gridSize)  ) {  
-                            acc.push(gridMatrix.slice(i, i + gridSize));
-                        }
-                        return acc;
-                    }, []), gridSize, timer1, rounds1)
+            const [algorithmName, algorithmFunc] = getAlgorithm(algorithm);
+            console.log(`${algorithmName} starts!`)
+            const func = () => {
+                try {
+                    console.log(`${algorithmName} searching...`)
+                    algorithmFunc(gridAs2dMatrix, gridSize, timer1, rounds1)
                     rounds1++;
+                } catch (e) {
+                    toast("Error occured, stopping timers.")
+                    console.log(e)
+                    clearInterval(timer1);
+                    clearInterval(timer2);
                 }
-                timer1 = setInterval(func)
-            } if (algorithm === 2) {
-                console.log("A* algorithm starts!")
-              /*  const func1 = () => {
-                    console.log("Calculating heuristics...")
-                    ended = heuristicCalculation(gridMatrix.reduce((acc, curr, i) => {
-                        if ( !(i % gridSize)  ) {  
-                            acc.push(gridMatrix.slice(i, i + gridSize));
-                        }
-                        return acc;
-                    }, []), gridSize, timer1, rounds1)
-                    rounds1++;
-                } 
-                timer1 = setInterval(func1,1/10000) */
-                const func2 = () => {
-               //     if (ended === 1){
-                        console.log("A* algorithm searching...")
-                        aSearch(gridMatrix.reduce((acc, curr, i) => {
-                            if ( !(i % gridSize)  ) {  
-                                acc.push(gridMatrix.slice(i, i + gridSize));
-                            }
-                            return acc;
-                        }, []), gridSize, timer2, rounds2)
-                        rounds2++;
-                    }
-              //  }
-                timer2 = setInterval(func2) 
             }
-            if (algorithm === 3){
-                console.log("Breadth-first search starts!")
-                const func = () => {
-                    console.log("Breadth-first search searching...")
-                    bfsSearch(gridMatrix.reduce((acc, curr, i) => {
-                        if ( !(i % gridSize)  ) {  
-                            acc.push(gridMatrix.slice(i, i + gridSize));
-                        }
-                        return acc;
-                    }, []), gridSize, timer1, rounds1)
-                    rounds1++;
-                }
-                timer1 = setInterval(func)
-            }
-            if (algorithm === 4){
-                console.log("Depth-first search starts!")
-                const func = () => {
-                    console.log("Depth-first search searching...")
-                    dfsSearch(gridMatrix.reduce((acc, curr, i) => {
-                        if ( !(i % gridSize)  ) {  
-                            acc.push(gridMatrix.slice(i, i + gridSize));
-                        }
-                        return acc;
-                    }, []), gridSize, timer1, rounds1)
-                    rounds1++;
-                }
-                timer1 = setInterval(func)
-            }
+            timer1 = setInterval(func)
         } else {
             clearInterval(timer1);
             clearInterval(timer2);
@@ -148,10 +98,20 @@ function Grid(props) {
         setStarted(!started);
     }
 
-    const resetGrid = (size) => {
-        gridMatrix.forEach(e => e.ref.current.resetState());
-        setGridMatrix(Array.from(new Array(size * size)).map((_,i) => {return {ref: createRef()}}))
-        setFreeIcons([2,3])
+    //If fullClear is set to false, does a "soft clear", only resetting tiles that are searching, searched or a part of the path
+    const resetGrid = (size, fullClear=true) => {
+        if (fullClear) {
+            setStarted(false);
+            gridMatrix.forEach(e => e.ref.current.resetState());
+            setGridMatrix(Array.from(new Array(size * size)).map((_,i) => {return {ref: createRef()}}))
+            setFreeIcons([2,3])
+        } else {
+            gridMatrix.forEach(e => {
+                if ([4,5,6,8,9,10].includes(e.ref.current.getState())) {
+                    e.ref.current.resetState();
+                }
+            });
+        }
     }
 
     const handlegridSizeChange = (e) => {
@@ -160,7 +120,7 @@ function Grid(props) {
     }
 
     //TODO Make presets for the borders -> maze, maybe have a algorithm for generating a random maze
-    //TODO Save to file and upload to load a state
+
     const optionsRef = createRef();
 
     return <>
@@ -169,7 +129,7 @@ function Grid(props) {
                 return <Item optionsRef={optionsRef} getStarted={getStarted} getPressedDown={props.getPressedDown} innerRef={e.ref} setFreeIcons={setFreeIcons} freeIcons={freeIcons} iconSelected={iconSelected} setIconSelected={setIconSelected} key={i}/>
             })}
         </div>
-        <Options innerRef={optionsRef} toggleAlgorithm={toggleAlgorithm} getGridState={getData} setGridState={setData} started={started} toggleStart={toggleStart} setFreeIcons={setFreeIcons} freeIcons={freeIcons} iconSelected={iconSelected} setIconSelected={setIconSelected} setGridSize={handlegridSizeChange} gridSize={gridSize} resetGrid={resetGrid}/>  
+        <Options innerRef={optionsRef} setAlgorithm={setAlgorithm} getGridState={getData} setGridState={setData} started={started} toggleStart={toggleStart} setFreeIcons={setFreeIcons} freeIcons={freeIcons} iconSelected={iconSelected} setIconSelected={setIconSelected} setGridSize={handlegridSizeChange} gridSize={gridSize} resetGrid={resetGrid}/>  
         <ToastContainer
             position="top-right"
             autoClose={2000}

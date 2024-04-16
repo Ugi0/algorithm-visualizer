@@ -34,8 +34,6 @@ function Options(props) {
         }
     }
 
-    //TODO Add reset button
-
     const saveFile = async (blob) => {
         const a = document.createElement('a');
         a.download = 'state.txt';
@@ -56,25 +54,13 @@ function Options(props) {
     };
 
     return <div className="Options">
-        <div className='OptionsItem' id="dijkstraAlgorithm">
-            <button onClick={props.toggleAlgorithm} id="Dijkstra">
-                {"Dijkstra's algorithm"}
-            </button>
-        </div>
-        <div className='OptionsItem' id="A*Algorithm">
-        <button onClick={props.toggleAlgorithm} id="A*">
-                {"A* algorithm"}
-            </button>
-        </div>
-        <div className='OptionsItem' id="Breadth-first search">
-        <button onClick={props.toggleAlgorithm} id="BFS">
-                {"Breadth-first search"}
-            </button>
-        </div>
-        <div className='OptionsItem' id="Depth-first search">
-        <button onClick={props.toggleAlgorithm} id="DFS">
-                {"Depth-first search"}
-            </button>
+        <div className='OptionsItem' id="algorithmChooser">
+            <select onChange={(e) => { props.setAlgorithm(parseInt(e.target.value)); props.resetGrid(props.gridSize, false) }}>
+                <option value={1}> Dijkstra's algorithm </option>
+                <option value={2}> A* algorithm </option>
+                <option value={3}> Breadth-first search </option>
+                <option value={4}> Depth-first search </option>
+            </select>
         </div>
         <div className='OptionsItem' id="gridWidthOption">
             gridSize
