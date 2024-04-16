@@ -77,7 +77,6 @@ function Grid(props) {
             var rounds1 = 0;
             var rounds2 = 0;
             var ended = 0;
-
             if (algorithm === 2) {
                 console.log("A* algorithm starts!")
                 const func1 = () => {
@@ -87,10 +86,17 @@ function Grid(props) {
                 }
                 timer1 = setInterval(func1)
                 const func2 = () => {
-                    if (ended === 1){
-                        console.log("A* algorithm searching...")
-                        aSearch(gridAs2dMatrix, gridSize, timer2, rounds2)
-                        rounds2++;
+                    try {
+                        if (ended === 1){
+                            console.log("A* algorithm searching...")
+                            aSearch(gridAs2dMatrix, gridSize, timer2, rounds2)
+                            rounds2++;
+                        }
+                    } catch (e) {
+                        toast("Error occured, stopping timers.")
+                        console.log(e)
+                        clearInterval(timer1);
+                        clearInterval(timer2);
                     }
                 }
                 timer2 = setInterval(func2) 
@@ -98,9 +104,16 @@ function Grid(props) {
                 const [algorithmName, algorithmFunc] = getAlgorithm(algorithm);
                 console.log(`${algorithmName} starts!`)
                 const func = () => {
-                    console.log(`${algorithmName} searching...`)
-                    algorithmFunc(gridAs2dMatrix, gridSize, timer1, rounds1)
-                    rounds1++;
+                    try {
+                        console.log(`${algorithmName} searching...`)
+                        algorithmFunc(gridAs2dMatrix, gridSize, timer1, rounds1)
+                        rounds1++;
+                    } catch (e) {
+                        toast("Error occured, stopping timers.")
+                        console.log(e)
+                        clearInterval(timer1);
+                        clearInterval(timer2);
+                    }
                 }
                 timer1 = setInterval(func)
             }
