@@ -48,10 +48,29 @@ function aSearch(matrix, gridSize, timer, rounds) {
     const getNextTile = (row,col) => {
         var i_min = row;
         var j_min = col;
+        var heuristic = 0;
+        let list_of_mins = [];
+        const i_end = matrix.findIndex(row => row.map(e => e.ref.current.getState()).includes(3));
+        const j_end = matrix[i_end].map(e => e.ref.current.getState()).indexOf(3);
         var min = 100000;
         queue.forEach(([i,j]) => {
-            if (matrix[i][j].ref.current.getDistance() + matrix[i][j].ref.current.getHeuristic() < min){
-                min = matrix[i][j].ref.current.getDistance() + matrix[i][j].ref.current.getHeuristic()
+            heuristic = (Math.abs(i-i_end)+Math.abs(j-j_end))
+            if (matrix[i][j].ref.current.getDistance() +  heuristic < min){
+                min = matrix[i][j].ref.current.getDistance() +  heuristic
+                i_min = i
+                j_min = j
+            }
+        }) 
+        queue.forEach(([i,j]) => {
+            heuristic = (Math.abs(i-i_end)+Math.abs(j-j_end))
+            if (matrix[i][j].ref.current.getDistance() + heuristic === min){
+                list_of_mins.push([i,j])
+            }
+        }) 
+        var closest = 200000;
+        list_of_mins.forEach(([i,j]) => {
+            if (Math.abs(i-row)+Math.abs(j-col) < closest){
+                closest = Math.abs(i-row)+Math.abs(j-col) // matrix[i][j].ref.current.getHeuristic()
                 i_min = i
                 j_min = j
             }

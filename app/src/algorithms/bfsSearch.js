@@ -45,9 +45,23 @@ function bfsSearch(matrix, gridSize, timer, rounds) {
         var i_min = row;
         var j_min = col;
         var min = 100000;
+        let list_of_mins = []
         queue.forEach(([i,j]) => {
             if (matrix[i][j].ref.current.getDistance() < min){
                 min = matrix[i][j].ref.current.getDistance()
+                i_min = i
+                j_min = j
+            }
+        }) 
+        queue.forEach(([i,j]) => {
+            if (matrix[i][j].ref.current.getDistance() === min){
+                list_of_mins.push([i,j])
+            }
+        }) 
+        var closest = 200000;
+        list_of_mins.forEach(([i,j]) => {
+            if (Math.abs(i-row)+Math.abs(j-col) < closest){
+                closest = Math.abs(i-row)+Math.abs(j-col)
                 i_min = i
                 j_min = j
             }

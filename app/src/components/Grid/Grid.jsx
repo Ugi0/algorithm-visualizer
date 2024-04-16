@@ -2,8 +2,6 @@ import Options from '../Options/Options';
 import { createRef, useState } from 'react';
 import './Grid.css'
 import Item from '../Item/Item';
-import distanceCalculation from "../../algorithms/distanceCalculation";
-import heuristicCalculation from '../../algorithms/heuristicCalculation';
 import dijkstraSearch from "../../algorithms/dijkstraSearch";
 import aSearch from '../../algorithms/aSearch';
 import bfsSearch from '../../algorithms/bfsSearch';
@@ -90,7 +88,7 @@ function Grid(props) {
                 timer1 = setInterval(func)
             } if (algorithm === 2) {
                 console.log("A* algorithm starts!")
-                const func1 = () => {
+              /*  const func1 = () => {
                     console.log("Calculating heuristics...")
                     ended = heuristicCalculation(gridMatrix.reduce((acc, curr, i) => {
                         if ( !(i % gridSize)  ) {  
@@ -99,10 +97,10 @@ function Grid(props) {
                         return acc;
                     }, []), gridSize, timer1, rounds1)
                     rounds1++;
-                }
-                timer1 = setInterval(func1)
+                } 
+                timer1 = setInterval(func1,1/10000) */
                 const func2 = () => {
-                    if (ended === 1){
+               //     if (ended === 1){
                         console.log("A* algorithm searching...")
                         aSearch(gridMatrix.reduce((acc, curr, i) => {
                             if ( !(i % gridSize)  ) {  
@@ -112,7 +110,7 @@ function Grid(props) {
                         }, []), gridSize, timer2, rounds2)
                         rounds2++;
                     }
-                }
+              //  }
                 timer2 = setInterval(func2) 
             }
             if (algorithm === 3){

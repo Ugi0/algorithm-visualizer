@@ -206,8 +206,8 @@ function dfsSearch(matrix, gridSize, timer, rounds) {
             matrix[x-1][y].ref.current.setState(4)
             matrix[x-1][y].ref.current.setDistance(1)
         } else if (y+1 < gridSize && ([0,7].includes(matrix[x][y+1].ref.current.getState()))){
-            matrix[x-1][y].ref.current.setState(4)
-            matrix[x-1][y].ref.current.setDistance(1)
+            matrix[x][y+1].ref.current.setState(4)
+            matrix[x][y+1].ref.current.setDistance(1)
         } else if (x+1 < gridSize && ([0,7].includes(matrix[x+1][y].ref.current.getState()))){
             matrix[x+1][y].ref.current.setState(4)
             matrix[x+1][y].ref.current.setDistance(1)
