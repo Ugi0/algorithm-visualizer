@@ -1,8 +1,18 @@
 
-function aSearch(matrix, gridSize, timer, rounds) {
+function aSearch(matrix, gridSize, timer, rounds, toast) {
     //matrix coordinates i and j are in wrong places therefore i = the actual j and j = the actual i. With this in mind algorithm still functions correctly.
     // 0 default, 1 Border, 2 Start, 3 End, 4 Searching, 5 Searched, 6 Path, 7 Slow Tile, 8 Searching Slow Tile, 9 Searched Slow Tile, 10 Path Slow Tile.
 
+    
+    const noSearchableCheck = () => {
+        var noSearchables = 1;
+            queue.forEach(([i,j]) => {
+                if ([0,7].includes(matrix[i][j].ref.current.getState())){
+                    noSearchables = 0;
+                }
+            })
+        return noSearchables
+    }
     
     // Calculates the shortest distance neighbour for given coordinates.
     const calculateDistance = (i,j) => {
@@ -213,26 +223,34 @@ function aSearch(matrix, gridSize, timer, rounds) {
             }
         })
     
-        const row = matrix.findIndex(row => row.map(e => e.ref.current.getState()).includes(2));
-        const col = matrix[row].map(e => e.ref.current.getState()).indexOf(2);
-        if (goalCheck() === 1){
-            if (pathEndCheck(row,col) === 1) {
-                console.log("FOUND!")
-                clearInterval(timer);
+        if (noSearchableCheck() === 0){
+            const row = matrix.findIndex(row => row.map(e => e.ref.current.getState()).includes(2));
+            const col = matrix[row].map(e => e.ref.current.getState()).indexOf(2);
+            if (goalCheck() === 1){
+                if (pathEndCheck(row,col) === 1) {
+                    console.log("FOUND!")
+                    clearInterval(timer);
+                    return 1;
+                } else {
+                    buildPath()
+                }
             } else {
-                buildPath()
+                let tile = getNextTile(row,col)
+                if (matrix[tile[0]][tile[1]].ref.current.getState() !== 2){
+                    if (matrix[tile[0]][tile[1]].ref.current.getState() === 7){
+                        matrix[tile[0]][tile[1]].ref.current.setState(8);
+                    } else {
+                        matrix[tile[0]][tile[1]].ref.current.setState(4);
+                    }  
+                }
             }
         } else {
-            let tile = getNextTile(row,col)
-            if (matrix[tile[0]][tile[1]].ref.current.getState() !== 2){
-                if (matrix[tile[0]][tile[1]].ref.current.getState() === 7){
-                    matrix[tile[0]][tile[1]].ref.current.setState(8);
-                } else {
-                    matrix[tile[0]][tile[1]].ref.current.setState(4);
-                }  
-            }
+            clearInterval(timer)
+            toast("No more searchables!")
+            return 1;
         }
     }
+    return 0;
 
 }
 

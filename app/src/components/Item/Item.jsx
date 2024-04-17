@@ -15,6 +15,7 @@ function Item(props) {
             resetState: function() { setStatus(0); },
             setState: function(value) { setStatus(value); },
             getDistance: function() { return distance; },
+            resetDistance: function() { setDistance(100000); },
             setDistance: function(value) { setDistance(value); },
             getHeuristic: function() {return heuristic},
             setHeuristic: function(value) { setHeuristic(value);}
