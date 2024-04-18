@@ -5,9 +5,11 @@ import Item from '../Item/Item';
 import dijkstraSearch from "../../algorithms/dijkstraSearch";
 import aSearch from '../../algorithms/aSearch';
 import bfsSearch from '../../algorithms/bfsSearch';
-import dfsSearch from '../../algorithms/dfsSearch'
+import dfsSearch from '../../algorithms/dfsSearch';
+import  generateMaze  from '../../algorithms/mazeGenerator';
 import { ToastContainer, toast, Flip } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
 
 var timer1;
 var timer2;
@@ -100,6 +102,8 @@ function Grid(props) {
 
     //If fullClear is set to false, does a "soft clear", only resetting tiles that are searching, searched or a part of the path
     const resetGrid = (size, fullClear=true) => {
+        console.log(gridMatrix)
+
         if (fullClear) {
             setStarted(false);
             gridMatrix.forEach(e => e.ref.current.resetState());
@@ -121,6 +125,16 @@ function Grid(props) {
 
     //TODO Make presets for the borders -> maze, maybe have a algorithm for generating a random maze
 
+    const generateMazeInGrid = () => {
+        console.log("Generating maze...");
+        const maze = generateMaze(gridSize);
+  
+        console.log(maze);
+        // Update the grid with the maze data
+        // Similar to the previous implementation
+    };
+
+
     const optionsRef = createRef();
 
     return <>
@@ -129,7 +143,7 @@ function Grid(props) {
                 return <Item optionsRef={optionsRef} getStarted={getStarted} getPressedDown={props.getPressedDown} innerRef={e.ref} setFreeIcons={setFreeIcons} freeIcons={freeIcons} iconSelected={iconSelected} setIconSelected={setIconSelected} key={i}/>
             })}
         </div>
-        <Options innerRef={optionsRef} setAlgorithm={setAlgorithm} getGridState={getData} setGridState={setData} started={started} toggleStart={toggleStart} setFreeIcons={setFreeIcons} freeIcons={freeIcons} iconSelected={iconSelected} setIconSelected={setIconSelected} setGridSize={handlegridSizeChange} gridSize={gridSize} resetGrid={resetGrid}/>  
+        <Options innerRef={optionsRef} setAlgorithm={setAlgorithm} getGridState={getData} setGridState={setData} started={started} toggleStart={toggleStart} setFreeIcons={setFreeIcons} freeIcons={freeIcons} iconSelected={iconSelected} setIconSelected={setIconSelected} setGridSize={handlegridSizeChange} gridSize={gridSize} resetGrid={resetGrid} generateMaze={generateMazeInGrid} />  
         <ToastContainer
             position="top-right"
             autoClose={2000}

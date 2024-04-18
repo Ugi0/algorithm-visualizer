@@ -78,7 +78,12 @@ function Options(props) {
             </button>
         </div>
         <div className='OptionsItem' id='reset'>
-            <button onClick={() => props.resetGrid(props.gridSize)}>Reset Grid</button>
+            <button onClick={() => props.resetGrid(props.gridSize)}>Reset Grid
+            </button>
+        </div>
+        <div className='OptionsItem' id='generateMaze'>
+            <button onClick={props.generateMaze}>Generate Maze
+            </button>
         </div>
         <div>
             <input 
