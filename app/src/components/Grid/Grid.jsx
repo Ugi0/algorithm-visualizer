@@ -19,6 +19,11 @@ function Grid(props) {
     const [started, setStarted] = useState(false);
     const [algorithm, setAlgorithm] = useState(1);
 
+    //TODO make it so borders can't be added after started
+    //TODO make the interface look better
+
+    //TODO Make so dragging changes only into one type of
+
     const [gridMatrix, setGridMatrix] = useState(Array.from(new Array(gridSize * gridSize)).map((_,i) => {return {ref: createRef()}}))
 
     const getStarted = () => {
@@ -41,7 +46,7 @@ function Grid(props) {
         }), 200)
     }
 
-    //A function to get the required algorithm functions, removes code repetition
+    //TODO A function to get the required algorithm functions, removes code repetition
     const getAlgorithm = (algorithm) => {
         switch (algorithm) {
             case 1:
@@ -130,7 +135,13 @@ function Grid(props) {
 
     const generateMazeInGrid = () => {
         console.log("Generating maze...");
-        const maze = generateMaze(gridSize);
+        const gridAs2dMatrix = gridMatrix.reduce((acc, curr, i) => {
+            if ( !(i % gridSize)  ) {  
+                acc.push(gridMatrix.slice(i, i + gridSize));
+            }
+            return acc;
+        }, [])
+        const maze = generateMaze(gridSize, gridAs2dMatrix);
   
         console.log(maze);
         // Update the grid with the maze data

@@ -64,6 +64,7 @@ function Options(props) {
         </div>
         <div className='OptionsItem' id="gridWidthOption">
             gridSize
+            {/*Change icon size and run speed based on the gridSize*/}
             <input onChange={(e) => props.setGridSize(parseInt(e.target.value))} value={props.gridSize} type="number" min={10} max={50} />
         </div>
         <div className='icons' style={{display: 'flex', flexDirection: 'row'}}>
@@ -72,6 +73,7 @@ function Options(props) {
             </div>
             <div className='slowTile' style={getSlowTileIconStyle()} onClick={() => setSlowTileBorder(slowTileBorder === 1 ? 7 : 1)} />
         </div>
+        {/*Make button change to Reset after done*/}
         <div className='OptionsItem' id='start'>
             <button onClick={props.toggleStart}>
                 {props.started ? "Stop" : "Start"}

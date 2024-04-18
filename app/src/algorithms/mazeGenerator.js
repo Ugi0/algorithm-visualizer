@@ -1,4 +1,4 @@
-function generateMaze(gridSize) {
+function generateMaze(gridSize, gridMatrix) {
     const maze = Array.from({ length: gridSize }, () => Array(gridSize).fill(0)); // 0 represents a wall
     const start = { x: Math.floor(gridSize / 2), y: Math.floor(gridSize / 2) };
     maze[start.x][start.y] = 1; // 1 represents a path
@@ -12,7 +12,8 @@ function generateMaze(gridSize) {
 
         if (neighbors.length > 0) {
             const next = neighbors[Math.floor(Math.random() * neighbors.length)];
-            maze[next.x][next.y] = 1;
+            gridMatrix[next.x][next.y].ref.current.setState(1);
+            //maze[next.x][next.y] = 1;
             frontier.push(next);
         } else {
             // Base case: If there are no more neighbors to add, remove the current cell from the frontier
