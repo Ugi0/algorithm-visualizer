@@ -10,9 +10,7 @@ import  generateMaze  from '../../algorithms/mazeGenerator';
 import { ToastContainer, toast, Flip } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-
-var timer1;
-var timer2;
+var timer;
 
 function Grid(props) {
     const [gridSize, setGridSize] = useState(20);
@@ -39,6 +37,7 @@ function Grid(props) {
         setGridMatrix(newGrid)
         setTimeout(() => parts.slice(2).forEach((e,i) => {
             newGrid[i].ref.current.setState(parseInt(e))
+            newGrid[i].ref.current.setDistance(100000)
         }), 200)
     }
 
@@ -75,27 +74,27 @@ function Grid(props) {
         }, [])
 
         if (!started) {
-            var rounds1 = 0;
-            var rounds2 = 0;
-            var ended = 0;
+            var rounds = 0;
+            var found = 0;
             const [algorithmName, algorithmFunc] = getAlgorithm(algorithm);
             console.log(`${algorithmName} starts!`)
             const func = () => {
                 try {
                     console.log(`${algorithmName} searching...`)
-                    algorithmFunc(gridAs2dMatrix, gridSize, timer1, rounds1)
-                    rounds1++;
+                    found = algorithmFunc(gridAs2dMatrix, gridSize, timer, rounds, toast)
+                    rounds++;
+                    if (found === 1){
+                        setStarted(false)
+                    }
                 } catch (e) {
                     toast("Error occured, stopping timers.")
                     console.log(e)
-                    clearInterval(timer1);
-                    clearInterval(timer2);
+                    clearInterval(timer);
                 }
             }
-            timer1 = setInterval(func)
+            timer = setInterval(func,10)
         } else {
-            clearInterval(timer1);
-            clearInterval(timer2);
+            clearInterval(timer);
         }
         setStarted(!started);
     }
@@ -106,13 +105,17 @@ function Grid(props) {
 
         if (fullClear) {
             setStarted(false);
-            gridMatrix.forEach(e => e.ref.current.resetState());
+            gridMatrix.forEach(e => {
+                e.ref.current.resetState()
+                e.ref.current.resetDistance()
+        });
             setGridMatrix(Array.from(new Array(size * size)).map((_,i) => {return {ref: createRef()}}))
             setFreeIcons([2,3])
         } else {
             gridMatrix.forEach(e => {
                 if ([4,5,6,8,9,10].includes(e.ref.current.getState())) {
                     e.ref.current.resetState();
+                    e.ref.current.resetDistance();
                 }
             });
         }
