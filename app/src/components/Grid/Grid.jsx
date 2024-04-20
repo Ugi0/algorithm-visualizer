@@ -11,15 +11,16 @@ import { ToastContainer, toast, Flip } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 var timer;
+var started
 
 function Grid(props) {
     const [gridSize, setGridSize] = useState(20);
     const [iconSelected, setIconSelected] = useState(false);
     const [freeIcons, setFreeIcons] = useState([2,3])
-    const [started, setStarted] = useState(false);
+    const [running, setRunning] = useState(false);
     const [algorithm, setAlgorithm] = useState(1);
 
-    //TODO make it so borders can't be added after started
+    //TODO make it so borders can't be added after running
     //TODO make the interface look better
 
     //TODO Make so dragging changes only into one type of
@@ -27,7 +28,7 @@ function Grid(props) {
     const [gridMatrix, setGridMatrix] = useState(Array.from(new Array(gridSize * gridSize)).map((_,i) => {return {ref: createRef()}}))
 
     const getStarted = () => {
-        return started
+        return running
     }
 
     const getData = () => {
@@ -78,7 +79,8 @@ function Grid(props) {
             return acc;
         }, [])
 
-        if (!started) {
+        if (!running) {
+            started = true;
             var rounds = 0;
             var found = 0;
             const [algorithmName, algorithmFunc] = getAlgorithm(algorithm);
@@ -89,7 +91,8 @@ function Grid(props) {
                     found = algorithmFunc(gridAs2dMatrix, gridSize, timer, rounds, toast)
                     rounds++;
                     if (found === 1){
-                        setStarted(false)
+                        setRunning(false)
+                        started = false
                     }
                 } catch (e) {
                     toast("Error occured, stopping timers.")
@@ -101,15 +104,14 @@ function Grid(props) {
         } else {
             clearInterval(timer);
         }
-        setStarted(!started);
+        setRunning(!running);
     }
 
     //If fullClear is set to false, does a "soft clear", only resetting tiles that are searching, searched or a part of the path
     const resetGrid = (size, fullClear=true) => {
-        console.log(gridMatrix)
-
+        started = undefined;
         if (fullClear) {
-            setStarted(false);
+            setRunning(false);
             gridMatrix.forEach(e => {
                 e.ref.current.resetState()
                 e.ref.current.resetDistance()
@@ -124,6 +126,7 @@ function Grid(props) {
                 }
             });
         }
+        setRunning(false);
     }
 
     const handlegridSizeChange = (e) => {
@@ -157,7 +160,7 @@ function Grid(props) {
                 return <Item optionsRef={optionsRef} getStarted={getStarted} getPressedDown={props.getPressedDown} innerRef={e.ref} setFreeIcons={setFreeIcons} freeIcons={freeIcons} iconSelected={iconSelected} setIconSelected={setIconSelected} key={i}/>
             })}
         </div>
-        <Options innerRef={optionsRef} setAlgorithm={setAlgorithm} getGridState={getData} setGridState={setData} started={started} toggleStart={toggleStart} setFreeIcons={setFreeIcons} freeIcons={freeIcons} iconSelected={iconSelected} setIconSelected={setIconSelected} setGridSize={handlegridSizeChange} gridSize={gridSize} resetGrid={resetGrid} generateMaze={generateMazeInGrid} />  
+        <Options innerRef={optionsRef} setAlgorithm={setAlgorithm} getGridState={getData} setGridState={setData} started={started} running={running} toggleStart={toggleStart} setFreeIcons={setFreeIcons} freeIcons={freeIcons} iconSelected={iconSelected} setIconSelected={setIconSelected} setGridSize={handlegridSizeChange} gridSize={gridSize} resetGrid={resetGrid} generateMaze={generateMazeInGrid} />  
         <ToastContainer
             position="top-right"
             autoClose={2000}

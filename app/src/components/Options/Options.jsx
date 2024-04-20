@@ -53,6 +53,29 @@ function Options(props) {
         }
     };
 
+    const getStartButtonText = () => {
+        if (props.started === undefined) {
+            return "Start"
+        }
+        if (props.started && props.running) {
+            return "Stop"
+        }
+        if (props.started && !props.running) {
+            return "Continue"
+        }
+        if (props.started === false) {
+            return "Reset"
+        }
+    }
+
+    const handleStartButtonClick = () => {
+        if (props.started === false) {
+            props.resetGrid(props.gridSize)
+        } else {
+            props.toggleStart()
+        }
+    }
+
     return <div className="Options">
         <div className='OptionsItem' id="algorithmChooser">
             <select onChange={(e) => { props.setAlgorithm(parseInt(e.target.value)); props.resetGrid(props.gridSize, false) }}>
@@ -75,8 +98,8 @@ function Options(props) {
         </div>
         {/*Make button change to Reset after done*/}
         <div className='OptionsItem' id='start'>
-            <button onClick={props.toggleStart}>
-                {props.started ? "Stop" : "Start"}
+            <button onClick={handleStartButtonClick}>
+                {getStartButtonText()}
             </button>
         </div>
         <div className='OptionsItem' id='reset'>
