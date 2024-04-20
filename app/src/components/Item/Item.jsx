@@ -23,7 +23,7 @@ function Item(props) {
     }
 
     const handleOnClick = () => {
-        if (props.getStarted()) return
+        if (props.getStarted() !== undefined) return
         if (props.iconSelected) {
             if (props.freeIcons.length === 1) {
                 props.setIconSelected(false)
@@ -31,15 +31,22 @@ function Item(props) {
             setStatus(props.freeIcons[0])
             props.setFreeIcons(props.freeIcons.slice(1))
         } else {
-            setStatus(status ? 0 : props.optionsRef.current.getTileType())
+            let newStatus;
+            if (status === props.optionsRef.current.getCurrent()){
+                newStatus = 0;
+            } else {
+                newStatus = props.optionsRef.current.getCurrent();
+            }
+            props.optionsRef.current.setTileType(newStatus)
+            setStatus(props.optionsRef.current.getTileType())
         }
     }
 
     const handleDrag = () => {
-        if (props.getStarted()) return
+        if (props.getStarted() !== undefined) return
         if (status === 2 || status === 3) return
         if (props.getPressedDown()) {
-            setStatus(status ? 0 : props.optionsRef.current.getTileType())
+            setStatus(props.optionsRef.current.getTileType())
         }
     }
 

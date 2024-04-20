@@ -20,15 +20,12 @@ function Grid(props) {
     const [running, setRunning] = useState(false);
     const [algorithm, setAlgorithm] = useState(1);
 
-    //TODO make it so borders can't be added after running
     //TODO make the interface look better
-
-    //TODO Make so dragging changes only into one type of
 
     const [gridMatrix, setGridMatrix] = useState(Array.from(new Array(gridSize * gridSize)).map((_,i) => {return {ref: createRef()}}))
 
     const getStarted = () => {
-        return running
+        return started
     }
 
     const getData = () => {

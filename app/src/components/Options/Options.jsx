@@ -3,12 +3,16 @@ import FlagIcon from '@mui/icons-material/Flag';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { useRef, useState } from 'react';
 
+var tileType = 1;
+
 function Options(props) {
     const [slowTileBorder, setSlowTileBorder] = useState(1)
 
     if (props.innerRef) {
         props.innerRef.current = { 
-            getTileType: function() { return slowTileBorder; }
+            setTileType: function(value) { tileType = value; },
+            getTileType: function() { return tileType },
+            getCurrent: function() { return slowTileBorder; }
         }
     }
 
@@ -96,7 +100,6 @@ function Options(props) {
             </div>
             <div className='slowTile' style={getSlowTileIconStyle()} onClick={() => setSlowTileBorder(slowTileBorder === 1 ? 7 : 1)} />
         </div>
-        {/*Make button change to Reset after done*/}
         <div className='OptionsItem' id='start'>
             <button onClick={handleStartButtonClick}>
                 {getStartButtonText()}
