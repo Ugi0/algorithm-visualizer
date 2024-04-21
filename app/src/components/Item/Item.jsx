@@ -80,9 +80,9 @@ function Item(props) {
     const getIcon = () => {
         switch (status) {
             case 2:
-                return <PlayArrowIcon style={{color: '#fa5d32'}} />
+                return <PlayArrowIcon style={{color: '#fa5d32', fontSize: '100%', width: '100%', height: '100%'}} />
             case 3:
-                return <FlagIcon style={{color: '#043dc2'}}/>
+                return <FlagIcon style={{color: '#043dc2', fontSize: '100%', width: '100%', height: '100%'}}/>
             default:
                 return 
         }
