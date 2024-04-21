@@ -35,7 +35,11 @@ function Item(props) {
             if (status === props.optionsRef.current.getCurrent()){
                 newStatus = 0;
             } else {
-                newStatus = props.optionsRef.current.getCurrent();
+                if (status === 2 || status === 3) {
+                    return
+                } else {
+                    newStatus = props.optionsRef.current.getCurrent();
+                }
             }
             props.optionsRef.current.setTileType(newStatus)
             setStatus(props.optionsRef.current.getTileType())

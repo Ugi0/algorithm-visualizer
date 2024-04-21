@@ -419,10 +419,14 @@ function dfsSearch(matrix, gridSize, timer, rounds,toast) {
     let queue = [];
 
     if (rounds === 0){
+        var hasAlreadyStarted = 0;
         var x = 0;
         var y = 0;
         matrix.forEach((row,i) => {
             row.forEach((item,j) => {
+                if ([4,5,6,8,9,10].includes(item.ref.current.getState()) && pathEndCheck(i,j) === 0){
+                    hasAlreadyStarted = 1;
+                }
                 if ([2].includes(item.ref.current.getState()) && pathEndCheck(i,j) === 0){
                     current.push(i,j)
                     item.ref.current.setDistance(0);
@@ -431,37 +435,39 @@ function dfsSearch(matrix, gridSize, timer, rounds,toast) {
                 }
             })
         })
-        if (y-1 >= 0 && ([0,7].includes(matrix[x][y-1].ref.current.getState()))){
-            if ([0].includes(matrix[x][y-1].ref.current.getState())){
-                matrix[x][y-1].ref.current.setState(4)
-            } else {
-                matrix[x][y-1].ref.current.setState(8)
-            }
-            
-            matrix[x][y-1].ref.current.setDistance(1);
-        } else if (x-1 >= 0 && ([0,7].includes(matrix[x-1][y].ref.current.getState()))){
-            if ([0].includes(matrix[x-1][y].ref.current.getState())){
-                matrix[x-1][y].ref.current.setState(4)
-            } else {
-                matrix[x-1][y].ref.current.setState(8)
-            }
-            matrix[x-1][y].ref.current.setDistance(1)
-        } else if (y+1 < gridSize && ([0,7].includes(matrix[x][y+1].ref.current.getState()))){
-            if ([0].includes(matrix[x][y+1].ref.current.getState())){
-                matrix[x][y+1].ref.current.setState(4)
-            } else {
-                matrix[x][y+1].ref.current.setState(8)
-            }
-            matrix[x][y+1].ref.current.setDistance(1)
-        } else if (x+1 < gridSize && ([0,7].includes(matrix[x+1][y].ref.current.getState()))){
-            if ([0].includes(matrix[x+1][y].ref.current.getState())){
-                matrix[x+1][y].ref.current.setState(4)
-            } else {
-                matrix[x+1][y].ref.current.setState(8)
-            }
-            
-            matrix[x+1][y].ref.current.setDistance(1)
-        } 
+        if (hasAlreadyStarted === 0){
+            if (y-1 >= 0 && ([0,7].includes(matrix[x][y-1].ref.current.getState()))){
+                if ([0].includes(matrix[x][y-1].ref.current.getState())){
+                    matrix[x][y-1].ref.current.setState(4)
+                } else {
+                    matrix[x][y-1].ref.current.setState(8)
+                }
+                
+                matrix[x][y-1].ref.current.setDistance(1);
+            } else if (x-1 >= 0 && ([0,7].includes(matrix[x-1][y].ref.current.getState()))){
+                if ([0].includes(matrix[x-1][y].ref.current.getState())){
+                    matrix[x-1][y].ref.current.setState(4)
+                } else {
+                    matrix[x-1][y].ref.current.setState(8)
+                }
+                matrix[x-1][y].ref.current.setDistance(1)
+            } else if (y+1 < gridSize && ([0,7].includes(matrix[x][y+1].ref.current.getState()))){
+                if ([0].includes(matrix[x][y+1].ref.current.getState())){
+                    matrix[x][y+1].ref.current.setState(4)
+                } else {
+                    matrix[x][y+1].ref.current.setState(8)
+                }
+                matrix[x][y+1].ref.current.setDistance(1)
+            } else if (x+1 < gridSize && ([0,7].includes(matrix[x+1][y].ref.current.getState()))){
+                if ([0].includes(matrix[x+1][y].ref.current.getState())){
+                    matrix[x+1][y].ref.current.setState(4)
+                } else {
+                    matrix[x+1][y].ref.current.setState(8)
+                }
+                
+                matrix[x+1][y].ref.current.setDistance(1)
+            } 
+        }
     }
 
     if (rounds !== 0){
