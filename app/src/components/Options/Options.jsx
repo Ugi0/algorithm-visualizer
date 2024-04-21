@@ -67,9 +67,15 @@ function Options(props) {
         if (props.started && !props.running) {
             return "Continue"
         }
-        if (props.started === false) {
-            return "Reset"
-        }
+    }
+
+    const getStartButton = () => {
+        if (props.started === false) return <></>
+        return (
+            <button onClick={handleStartButtonClick}>
+                {getStartButtonText()}
+            </button>
+        )
     }
 
     const handleStartButtonClick = () => {
@@ -90,9 +96,7 @@ function Options(props) {
             </select>
         </div>
         <div className='OptionsItem' id="gridWidthOption">
-            gridSize
-            {/*Change icon size and run speed based on the gridSize*/}
-            <input onChange={(e) => props.setGridSize(parseInt(e.target.value))} value={props.gridSize} type="number" min={10} max={50} />
+            <input type="range" min="10" max="50" value={props.gridSize} onChange={(e) => { if (props.started === undefined) props.setGridSize(parseInt(e.target.value))}} />
         </div>
         <div className='icons' style={{display: 'flex', flexDirection: 'row'}}>
             <div className='OptionsItem' id='startAndEndFlag' onClick={() => {if (props.freeIcons.length !== 0) props.setIconSelected(true)}}>
@@ -101,16 +105,15 @@ function Options(props) {
             <div className='slowTile' style={getSlowTileIconStyle()} onClick={() => setSlowTileBorder(slowTileBorder === 1 ? 7 : 1)} />
         </div>
         <div className='OptionsItem' id='start'>
-            <button onClick={handleStartButtonClick}>
-                {getStartButtonText()}
-            </button>
+            {getStartButton()}
         </div>
         <div className='OptionsItem' id='reset'>
             <button onClick={() => props.resetGrid(props.gridSize)}>Reset Grid
             </button>
         </div>
         <div className='OptionsItem' id='generateMaze'>
-            <button onClick={props.generateMaze}>Generate Maze
+            <button onClick={props.generateMaze}>
+                Generate Maze
             </button>
         </div>
         <div>
