@@ -97,7 +97,7 @@ function Grid(props) {
                     clearInterval(timer);
                 }
             }
-            timer = setInterval(func,10)
+            timer = setInterval(func)
         } else {
             clearInterval(timer);
         }
@@ -106,6 +106,7 @@ function Grid(props) {
 
     //If fullClear is set to false, does a "soft clear", only resetting tiles that are searching, searched or a part of the path
     const resetGrid = (size, fullClear=true) => {
+        clearInterval(timer)
         started = undefined;
         if (fullClear) {
             setRunning(false);

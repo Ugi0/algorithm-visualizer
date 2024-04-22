@@ -51,6 +51,7 @@ function Options(props) {
     const fileInputRef = useRef();
 
     const handleChange = event => {
+        props.resetGrid(props.gridSize)
         const file = event.target.files[0];
         if (file.type === 'text/plain') {
             file.text().then(e => props.setGridState(e))
@@ -84,6 +85,25 @@ function Options(props) {
         } else {
             props.toggleStart()
         }
+    }
+
+    const getExportButton = () =>{
+        if (props.started === undefined) {
+            return ( 
+                <button onClick={handleExportButtonClick}>
+                    Export data
+                </button>
+                )
+        } else {
+            return <></>
+        }
+
+
+    }
+
+    const handleExportButtonClick = () => {
+        const blob = new Blob([props.getGridState()], {type : 'application/json'}); 
+        saveFile(blob);
     }
 
     return <div className="Options">
@@ -126,9 +146,7 @@ function Options(props) {
             <button onClick={() => fileInputRef.current.click()}>
                 Import data
             </button>
-            <button onClick={() => {const blob = new Blob([props.getGridState()], {type : 'application/json'}); saveFile(blob)}}>
-                Export data
-            </button>
+                {getExportButton()}
         </div>
     </div>
 }
