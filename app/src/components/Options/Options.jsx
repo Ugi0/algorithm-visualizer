@@ -50,9 +50,10 @@ function Options(props) {
 
     const fileInputRef = useRef();
 
-    const handleChange = event => {
+    const handleChange = (event) => {
         props.resetGrid(props.gridSize)
         const file = event.target.files[0];
+        if (file === undefined) return;
         if (file.type === 'text/plain') {
             file.text().then(e => props.setGridState(e))
         }
