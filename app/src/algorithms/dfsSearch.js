@@ -224,7 +224,6 @@ function dfsSearch(matrix, gridSize, timer, rounds,toast) {
                         max = 0;
                         matrix.forEach((row,i) => {
                             row.forEach((item,j) => { 
-                                console.log("ALL THE INDEXES: ",i,",",j)
                                 if ([2,5,9].includes(matrix[i][j].ref.current.getState())){
                                     if (j-1 >= 0 && [0,7].includes(matrix[i][j-1].ref.current.getState()) && matrix[i][j-1].ref.current.getDistance() > max){
                                         max = matrix[i][j-1].ref.current.getDistance()

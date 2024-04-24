@@ -243,7 +243,6 @@ function dijkstraSearch(matrix, gridSize, timer, rounds,toast) {
                 }
             }
         } else {
-            console.log("PÄÄTTYY")
             clearInterval(timer)
             toast("No more searchables!")
             return 1;
