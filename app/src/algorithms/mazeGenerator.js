@@ -37,9 +37,14 @@ function recursiveDivision(maze, x, y, width, height) {
     recursiveDivision(maze, x, wallY + 2, width, y + height - wallY - 2);
 }
 
-function generateMaze(width, height) {
+function generateMaze(matrix, width, height) {
     const maze = initializeMaze(width, height);
     recursiveDivision(maze, 0, 0, width, height);
+    maze.forEach((row,i) => {
+        row.forEach((item,j) => {
+            matrix[i][j].ref.current.setState(item);
+        })
+    })
     return maze;
 }
 

@@ -135,8 +135,8 @@ function Grid(props) {
     //TODO Make presets for the borders -> maze, maybe have a algorithm for generating a random maze
 
     const generateMazeInGrid = () => {
+        
         console.log("Generating maze...");
-        let maze = generateMaze(gridSize,gridSize);
         setRunning(false);
         const gridAs2dMatrix = gridMatrix.reduce((acc, curr, i) => {
             if ( !(i % gridSize)  ) {  
@@ -144,8 +144,8 @@ function Grid(props) {
             }
             return acc;
         }, [])
+        generateMaze(gridAs2dMatrix,gridSize,gridSize);
 
-        console.log(maze);
         // Update the grid with the maze data
         // Similar to the previous implementation
     };
