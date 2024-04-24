@@ -133,7 +133,7 @@ function Options(props) {
             </button>
         </div>
         <div className='OptionsItem' id='generateMaze'>
-            <button onClick={props.generateMaze}>
+            <button onClick={() => {props.resetGrid(props.gridSize); props.generateMaze()}}>
                 Generate Maze
             </button>
         </div>

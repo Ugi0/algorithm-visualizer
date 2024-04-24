@@ -1,5 +1,5 @@
 function initializeMaze(width, height) {
-    return Array.from({ length: height }, () => Array.from({ length: width }, () => 1));
+    return Array.from({ length: height }, () => Array.from({ length: width }, () => 0));
 }
 
 function recursiveDivision(maze, x, y, width, height) {
@@ -7,39 +7,45 @@ function recursiveDivision(maze, x, y, width, height) {
         return; // Base case: if the chamber is too small, do nothing
     }
 
-    // Choose a random wall to divide the chamber
-    const horizontal = Math.random() < 0.5;
-    const vertical = !horizontal;
-
-    // Calculate the position of the wall
-    const wallX = horizontal ? Math.floor(Math.random() * (width - 1) + x) : x;
-    const wallY = vertical ? Math.floor(Math.random() * (height - 1) + y) : y;
-
-    // Create the wall
-    if (horizontal) {
-        maze[wallY][wallX] = 0;
-        maze[wallY][wallX + 1] = 0;
-    } else {
-        maze[wallY][wallX] = 0;
-        maze[wallY + 1][wallX] = 0;
+    //Make horizontal wall
+    var wallX = 1 + Math.floor(Math.random() * (width - 2))
+    for (let ind = y; ind < y+height; ind++) {
+        maze[ind][x + wallX] = 1;
     }
 
-    // Create passages
-    const passageX = Math.floor(Math.random() * (width - 2) + x);
-    const passageY = Math.floor(Math.random() * (height - 2) + y);
-    maze[passageY][passageX] = 1;
-    maze[passageY + 1][passageX] = 1;
+    //Make vertical wall
+    var wallY = 1 + Math.floor(Math.random() * (height - 2))
+    for (let ind = x; ind < x+width; ind++) {
+        maze[y + wallY][ind] = 1;
+    }
+
+    // Create a gap in the vertical wall
+    const Y = Math.floor(Math.random() * (wallY - 1));
+    maze[y+Y][x+wallX] = 0;
+
+    // Create a gap in the horizontal wall
+    const X = Math.floor(Math.random() * (wallX - 1));
+    maze[y+wallY][x+X] = 0;
+
+    //Choose randomly to make third wall horizontal or vertical
+    if (Math.random() < 0.5) {
+        const Y = wallY + 1 + Math.floor(Math.random() * (height - wallY - 1));
+        maze[y+Y][x+wallX] = 0;
+    } else {
+        const X = wallX + 1 + Math.floor(Math.random() * (width - wallX - 1));
+        maze[y+wallY][x+X] = 0;
+    }
 
     // Recursively divide the chambers
-    recursiveDivision(maze, x, y, wallX - x, height);
-    recursiveDivision(maze, wallX + 2, y, x + width - wallX - 2, height);
-    recursiveDivision(maze, x, y, width, wallY - y);
-    recursiveDivision(maze, x, wallY + 2, width, y + height - wallY - 2);
+    recursiveDivision(maze, x, y, wallX, wallY)
+    recursiveDivision(maze, x + wallX + 1, y, width - wallX - 1, wallY)
+    recursiveDivision(maze, x, y + wallY + 1, wallX, height - wallY - 1);
+    recursiveDivision(maze, x + wallX + 1, y + wallY + 1, width - wallX - 1, height - wallY - 1)
 }
 
-function generateMaze(matrix, width, height) {
-    const maze = initializeMaze(width, height);
-    recursiveDivision(maze, 0, 0, width, height);
+function generateMaze(matrix, gridSize) {
+    const maze = initializeMaze(gridSize, gridSize);
+    recursiveDivision(maze, 0, 0, gridSize, gridSize);
     maze.forEach((row,i) => {
         row.forEach((item,j) => {
             matrix[i][j].ref.current.setState(item);

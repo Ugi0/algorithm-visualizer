@@ -144,7 +144,7 @@ function Grid(props) {
             }
             return acc;
         }, [])
-        generateMaze(gridAs2dMatrix,gridSize,gridSize);
+        generateMaze(gridAs2dMatrix,gridSize);
 
         // Update the grid with the maze data
         // Similar to the previous implementation
