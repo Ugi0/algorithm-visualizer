@@ -62,11 +62,10 @@ function dfsSearch(matrix, gridSize, timer, rounds,toast) {
             }
 
         }
-    //    console.log("MIKÄ ON MÄTÄÄ: (j+1 < gridSize && [5].includes(matrix[i][j+1].ref.current.getState())): ", j+1 < gridSize && [5].includes(matrix[i][j+1].ref.current.getState()))
         if (j+1 < gridSize && [5,9].includes(matrix[i][j+1].ref.current.getState())){
             let index = [i,j+1]
             const find = JSON.stringify(backtracked).includes(JSON.stringify(index));
-            if (!find /*&& searchedCheck(i,j+1) < 2 */){
+            if (!find){
                 if (j >= 0 && [0,7].includes(matrix[i][j].ref.current.getState()) && searchedCheck(i,j) < 2 ){
                     return [i,j+1]
                 } else if (i-1 >= 0 && [0,7].includes(matrix[i-1][j+1].ref.current.getState()) && searchedCheck(i-1,j+1) < 2 ){
@@ -78,7 +77,6 @@ function dfsSearch(matrix, gridSize, timer, rounds,toast) {
                 }
             }
         }
-   //     console.log("MIKÄ ON MÄTÄÄ: (i+1 < gridSize && [5].includes(matrix[i+1][j].ref.current.getState())): ", i+1 < gridSize && [5].includes(matrix[i+1][j].ref.current.getState()))
         if (i+1 < gridSize && [5,9].includes(matrix[i+1][j].ref.current.getState())){  
             let index = [i+1,j]
             const find = JSON.stringify(backtracked).includes(JSON.stringify(index));
@@ -146,7 +144,6 @@ function dfsSearch(matrix, gridSize, timer, rounds,toast) {
                 if ([4,8].includes(item.ref.current.getState())){
                     x = i
                     y = j
-            //        console.log("Searching: ",i,",",j," getState() i+1,j: ", matrix[i+1][j].ref.current.getState())
                     if (j-1 >= 0 && [0,7].includes(matrix[i][j-1].ref.current.getState()) && searchedCheck(i,j-1) < 2 && matrix[i][j-1].ref.current.getDistance() > max){
                             max = matrix[i][j-1].ref.current.getDistance()
                             i_max = i
@@ -168,14 +165,11 @@ function dfsSearch(matrix, gridSize, timer, rounds,toast) {
             })
         })
         if (max === 0){
-        //    console.log("MAX = 0")
             var nextFound = 0
             var repeat = 0;
             let visited = [[100000,100000]]
             while (nextFound === 0){
-          //      console.log("MAX2 = 0")
                 let backtrack = backtrackTile(x,y,visited)
-           //     console.log("BACKTRACK PALAUTE: ", backtrack)
                 visited.push([x,y])
                 if (backtrack !== 0){
                     var i = backtrack[0]
@@ -197,53 +191,27 @@ function dfsSearch(matrix, gridSize, timer, rounds,toast) {
                         i_max = i+1
                         j_max = j
                     }
-             //       console.log("PHASE1")
-             //       console.log("KOORD: ", i_max,",",j_max, " max: ", max)
                 } else {
-                    var i = x
-                    var j = y
-                //    console.log("PHASE2")
-                //    console.log("MIKÄ ON KOORDINAATIT PHASE2: ", i,",",j, " ja mikä on sen getDistance(): ", matrix[i][j].ref.current.getDistance())
-                    if (j-1 >= 0){
-              //          console.log("matrix[i][j-1].ref.current.getDistance() = ",  matrix[i][j-1].ref.current.getDistance())
-                    }
-                    if (i-1 >= 0){
-              //          console.log("matrix[i-1][j].ref.current.getDistance() = ", matrix[i-1][j].ref.current.getDistance())   
-                    }
-                    if (j+1 < gridSize){
-               //         console.log("matrix[i][j+1].ref.current.getDistance() = ", matrix[i][j+1].ref.current.getDistance())
-                    }
-                    if (i+1 < gridSize){
-           //             console.log("matrix[i+1][j].ref.current.getDistance()", matrix[i+1][j].ref.current.getDistance())
-                    }
-                    
+                    i = x
+                    j = y
                     if (j-1 >= 0 && [5,9].includes(matrix[i][j-1].ref.current.getState()) && !(JSON.stringify(visited).includes(JSON.stringify([i,j-1]))) && matrix[i][j-1].ref.current.getDistance() <= min){
-               //         console.log("TÄÄLLÄ KÄYTIIN1")
                         min = matrix[i][j-1].ref.current.getDistance()
-                        i = i
                         j = j-1
                     } else if (i-1 >= 0 && [5,9].includes(matrix[i-1][j].ref.current.getState()) && !(JSON.stringify(visited).includes(JSON.stringify([i-1,j]))) && matrix[i-1][j].ref.current.getDistance() <= min){
-                 //       console.log("TÄÄLLÄ KÄYTIIN2")
                         min = matrix[i-1][j].ref.current.getDistance()
                         i = i-1
-                        j = j
                     } else if (j+1 < gridSize && [5,9].includes(matrix[i][j+1].ref.current.getState()) && !(JSON.stringify(visited).includes(JSON.stringify([i,j+1]))) && matrix[i][j+1].ref.current.getDistance() <= min){
-                //        console.log("TÄÄLLÄ KÄYTIIN3 ja sen getDistance(): ", matrix[i][j+1].ref.current.getDistance())
                         min = matrix[i][j+1].ref.current.getDistance()
-                        i = i
                         j = j+1
                     } else if (i+1 < gridSize && [5,9].includes(matrix[i+1][j].ref.current.getState()) && !(JSON.stringify(visited).includes(JSON.stringify([i+1,j]))) && matrix[i+1][j].ref.current.getDistance() <= min) {
-                 //       console.log("TÄÄLLÄ KÄYTIIN4")
                         min = matrix[i+1][j].ref.current.getDistance()
                         i = i+1
-                        j = j
                     }
-                }
+                } 
                 if (max !== 0){
                     nextFound = 1
                 } else {
                     visited.forEach(([i2,j2]) => {
-            //            console.log("VISITED: ",i2,",",j2)
                     })
                     x = i
                     y = j
@@ -253,10 +221,11 @@ function dfsSearch(matrix, gridSize, timer, rounds,toast) {
                     if (repeat === 10){
                         visited = [[100000,100000]]
                         repeat = 0;
-             //           console.log("VISITED DEFAULT!!!!!!!")
+                        max = 0;
                         matrix.forEach((row,i) => {
-                            row.forEach((item,j) => {
-                                if ([5,9].includes(matrix[i][j].ref.current.getState())){
+                            row.forEach((item,j) => { 
+                                console.log("ALL THE INDEXES: ",i,",",j)
+                                if ([2,5,9].includes(matrix[i][j].ref.current.getState())){
                                     if (j-1 >= 0 && [0,7].includes(matrix[i][j-1].ref.current.getState()) && matrix[i][j-1].ref.current.getDistance() > max){
                                         max = matrix[i][j-1].ref.current.getDistance()
                                         i_max = i
@@ -344,12 +313,10 @@ function dfsSearch(matrix, gridSize, timer, rounds,toast) {
                 }
             })
         })
-        var min = 100000;
+        min = 100000;
         path.forEach(([i,j]) => {
-         //   console.log("Pathing ", i,",",j,": ",matrix[i][j].ref.current.getDistance())
             if (j-1 >= 0 && [4,5,8,9].includes(matrix[i][j-1].ref.current.getState())){
                 if (matrix[i][j-1].ref.current.getDistance() < min){
-           //         console.log("PATHED TILE 1 ", i,",",j-1,": ",matrix[i][j-1].ref.current.getDistance(), " round: ", rounds)
                     min = matrix[i][j-1].ref.current.getDistance()
                     i_new = i
                     j_new = j-1
@@ -357,7 +324,6 @@ function dfsSearch(matrix, gridSize, timer, rounds,toast) {
             }
             if (i-1 >= 0 && [4,5,8,9].includes(matrix[i-1][j].ref.current.getState())){
                 if (matrix[i-1][j].ref.current.getDistance() < min){
-        //            console.log("PATHED TILE 2 ", i-1,",",j,": ",matrix[i-1][j].ref.current.getDistance(), " round: ", rounds)
                     min = matrix[i-1][j].ref.current.getDistance()
                     i_new = i-1
                     j_new = j
@@ -365,7 +331,6 @@ function dfsSearch(matrix, gridSize, timer, rounds,toast) {
             }
             if (j+1 < gridSize && [4,5,8,9].includes(matrix[i][j+1].ref.current.getState())){
                 if (matrix[i][j+1].ref.current.getDistance() < min){
-          //          console.log("PATHED TILE 3 ", i,",",j+1,": ",matrix[i][j+1].ref.current.getDistance(), " round: ", rounds)
                     min = matrix[i][j+1].ref.current.getDistance()
                     i_new = i
                     j_new = j+1
@@ -373,14 +338,12 @@ function dfsSearch(matrix, gridSize, timer, rounds,toast) {
             }
             if (i+1 < gridSize && [4,5,8,9].includes(matrix[i+1][j].ref.current.getState())){
                 if (matrix[i+1][j].ref.current.getDistance() < min){
-               //     console.log("PATHED TILE 4 ", i+1,",",j,": ",matrix[i+1][j].ref.current.getDistance(), " round: ", rounds)
                     min = matrix[i+1][j].ref.current.getDistance()
                     i_new = i+1
                     j_new = j
                 }
             }
         })
-    //    console.log("MIN DISTANCE = ", min, " round: ", rounds)
         if (matrix[i_new][j_new].ref.current.getState() === 9){
             matrix[i_new][j_new].ref.current.setState(10)
         } else {
@@ -491,7 +454,7 @@ function dfsSearch(matrix, gridSize, timer, rounds,toast) {
                 console.log("FOUND!")
                 clearInterval(timer);
                 return 1;
-            } else {    
+            } else {   
                 var distanceReady = 1;
                 matrix.forEach((row,i) => {
                     row.forEach((item,j) => {

@@ -6,11 +6,14 @@ function aSearch(matrix, gridSize, timer, rounds, toast) {
     
     const noSearchableCheck = () => {
         var noSearchables = 1;
-            queue.forEach(([i,j]) => {
-                if ([0,7].includes(matrix[i][j].ref.current.getState())){
-                    noSearchables = 0;
-                }
-            })
+        queue.forEach(([i,j]) => {
+            if ([0,7].includes(matrix[i][j].ref.current.getState())){
+                noSearchables = 0;
+            }
+        })
+        if (goalCheck() === 1){
+            noSearchables = 0;
+        }
         return noSearchables
     }
     
@@ -188,18 +191,18 @@ function aSearch(matrix, gridSize, timer, rounds, toast) {
             queue.push([i+1, j])
         }
     }
+
+    //START
+
     let current = [];
     let queue = [];
 
     if (rounds === 0){
-        var x = 0;
-        var y = 0;
+
         matrix.forEach((row,i) => {
             row.forEach((item,j) => {
                 if ([2].includes(item.ref.current.getState())){
                     item.ref.current.setDistance(0);
-                    x = i
-                    y = j
                 }
             })
         })

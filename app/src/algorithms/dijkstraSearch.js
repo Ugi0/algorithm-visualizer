@@ -5,11 +5,14 @@ function dijkstraSearch(matrix, gridSize, timer, rounds,toast) {
 
     const noSearchableCheck = () => {
         var noSearchables = 1;
-            queue.forEach(([i,j]) => {
-                if ([0,7].includes(matrix[i][j].ref.current.getState())){
-                    noSearchables = 0;
-                }
-            })
+        queue.forEach(([i,j]) => {
+            if ([0,7].includes(matrix[i][j].ref.current.getState())){
+                noSearchables = 0;
+            }
+        })
+        if (goalCheck() === 1){
+            noSearchables = 0;
+        }
         return noSearchables
     }
 
@@ -184,18 +187,17 @@ function dijkstraSearch(matrix, gridSize, timer, rounds,toast) {
             queue.push([i+1, j])
         }
     }
+
+    //START
+
     let current = [];
     let queue = [];
 
     if (rounds === 0){
-        var x = 0;
-        var y = 0;
         matrix.forEach((row,i) => {
             row.forEach((item,j) => {
                 if ([2].includes(item.ref.current.getState())){
                     item.ref.current.setDistance(0);
-                    x = i
-                    y = j
                 }
             })
         })
@@ -218,7 +220,7 @@ function dijkstraSearch(matrix, gridSize, timer, rounds,toast) {
                 matrix[i][j].ref.current.setState(9)
             }
         })
-    
+        
         if (noSearchableCheck() === 0){
             const row = matrix.findIndex(row => row.map(e => e.ref.current.getState()).includes(2));
             const col = matrix[row].map(e => e.ref.current.getState()).indexOf(2);
@@ -241,6 +243,7 @@ function dijkstraSearch(matrix, gridSize, timer, rounds,toast) {
                 }
             }
         } else {
+            console.log("PÄÄTTYY")
             clearInterval(timer)
             toast("No more searchables!")
             return 1;
