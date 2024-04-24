@@ -1,49 +1,46 @@
-function generateMaze(gridSize, gridMatrix) {
-    const maze = Array.from({ length: gridSize }, () => Array(gridSize).fill(0)); // 0 represents a wall
-    const start = { x: Math.floor(gridSize / 2), y: Math.floor(gridSize / 2) };
-    maze[start.x][start.y] = 1; // 1 represents a path
+function initializeMaze(width, height) {
+    return Array.from({ length: height }, () => Array.from({ length: width }, () => 1));
+}
 
-    const frontier = [{ x: start.x, y: start.y }];
-
-    while (frontier.length > 0) {
-        // Select the next cell to add to the maze
-        const current = frontier[Math.floor(Math.random() * frontier.length)];
-        const neighbors = getNeighbors(current, gridSize, maze);
-
-        if (neighbors.length > 0) {
-            const next = neighbors[Math.floor(Math.random() * neighbors.length)];
-            gridMatrix[next.x][next.y].ref.current.setState(1);
-            //maze[next.x][next.y] = 1;
-            frontier.push(next);
-        } else {
-            // Base case: If there are no more neighbors to add, remove the current cell from the frontier
-            frontier.splice(frontier.indexOf(current), 1);
-        }
+function recursiveDivision(maze, x, y, width, height) {
+    if (width <= 2 || height <= 2) {
+        return; // Base case: if the chamber is too small, do nothing
     }
 
-    return maze.flat();
+    // Choose a random wall to divide the chamber
+    const horizontal = Math.random() < 0.5;
+    const vertical = !horizontal;
+
+    // Calculate the position of the wall
+    const wallX = horizontal ? Math.floor(Math.random() * (width - 1) + x) : x;
+    const wallY = vertical ? Math.floor(Math.random() * (height - 1) + y) : y;
+
+    // Create the wall
+    if (horizontal) {
+        maze[wallY][wallX] = 0;
+        maze[wallY][wallX + 1] = 0;
+    } else {
+        maze[wallY][wallX] = 0;
+        maze[wallY + 1][wallX] = 0;
+    }
+
+    // Create passages
+    const passageX = Math.floor(Math.random() * (width - 2) + x);
+    const passageY = Math.floor(Math.random() * (height - 2) + y);
+    maze[passageY][passageX] = 1;
+    maze[passageY + 1][passageX] = 1;
+
+    // Recursively divide the chambers
+    recursiveDivision(maze, x, y, wallX - x, height);
+    recursiveDivision(maze, wallX + 2, y, x + width - wallX - 2, height);
+    recursiveDivision(maze, x, y, width, wallY - y);
+    recursiveDivision(maze, x, wallY + 2, width, y + height - wallY - 2);
 }
 
-function getNeighbors(point, gridSize, maze) {
-    const neighbors = [];
-    const directions = [[-1, 0], [1, 0], [0, -1], [0, 1]];
-
-    directions.forEach(([dx, dy]) => {
-        const x = point.x + dx;
-        const y = point.y + dy;
-
-        if (x >= 0 && x < gridSize && y >= 0 && y < gridSize && maze[x][y] === 0) {
-            neighbors.push({ x, y });
-        }
-    });
-
-    return neighbors;
+function generateMaze(width, height) {
+    const maze = initializeMaze(width, height);
+    recursiveDivision(maze, 0, 0, width, height);
+    return maze;
 }
+
 export default generateMaze;
-    // Implementation of Prim's algorithm
-    // Return the generated maze
-
-//function getNeighbors(point, gridSize, maze) {
-    // Helper function to get neighbors
-    // Return neighbors
-//}

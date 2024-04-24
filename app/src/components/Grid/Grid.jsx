@@ -135,14 +135,15 @@ function Grid(props) {
 
     const generateMazeInGrid = () => {
         console.log("Generating maze...");
+        let maze = generateMaze(gridSize,gridSize);
+        setRunning(false);
         const gridAs2dMatrix = gridMatrix.reduce((acc, curr, i) => {
             if ( !(i % gridSize)  ) {  
                 acc.push(gridMatrix.slice(i, i + gridSize));
             }
             return acc;
         }, [])
-        const maze = generateMaze(gridSize, gridAs2dMatrix);
-  
+
         console.log(maze);
         // Update the grid with the maze data
         // Similar to the previous implementation
